@@ -1,3 +1,3 @@
 (() => {
-  console.log("Hello World!"); // Display the string.
+  console.log('Hello World!'); // Display the string.
 })();
