@@ -4,7 +4,7 @@ module.exports = {
     project: 'tsconfig.json',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint/eslint-plugin', 'import'],
+  plugins: ['@typescript-eslint/eslint-plugin', 'import', 'jest'],
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
@@ -23,4 +23,20 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn', { args: 'none' }],
     '@typescript-eslint/ban-types': 'off',
   },
+  overrides: [
+    {
+      files: ['**/*.test.js', '**/*.test.ts'],
+      extends: ['plugin:jest/recommended'],
+      env: {
+        jest: true,
+      },
+      rules: {
+        '@typescript-eslint/no-empty-function': 'off',
+        'jest/no-disabled-tests': 'warn',
+        'jest/no-focused-tests': 'warn',
+        'jest/no-identical-title': 'warn',
+        'jest/valid-expect': 'warn',
+      },
+    },
+  ],
 };
