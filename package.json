@@ -1,0 +1,11 @@
+{
+  "name": "express-typescript-starter",
+  "version": "0.1.0",
+  "description": "Express TypeScript starter repository",
+  "author": "Augustus Kamau",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
