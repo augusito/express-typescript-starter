@@ -1,14 +1,6 @@
+import { encode } from './utils';
+import { COLORS } from './constants';
 import { ColorOptions } from './interfaces';
-import { ENCODE_END, ENCODE_START, COLORS } from './constants';
-import { AnsiColor } from './ansi-color.enum';
-import { isAnsiAllowed } from './utils';
-
-const encode = (element: AnsiColor) => {
-  if (isAnsiAllowed()) {
-    return ENCODE_START + element + ENCODE_END;
-  }
-  return '';
-};
 
 export const color: Partial<ColorOptions> = {};
 

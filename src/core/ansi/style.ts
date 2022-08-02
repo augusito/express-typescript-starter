@@ -1,14 +1,6 @@
+import { encode } from './utils';
+import { STYLES } from './constants';
 import { StyleOptions } from './interfaces';
-import { ENCODE_END, ENCODE_START, STYLES } from './constants';
-import { AnsiStyle } from './ansi-style.enum';
-import { isAnsiAllowed } from './utils';
-
-const encode = (element: AnsiStyle | string) => {
-  if (isAnsiAllowed()) {
-    return ENCODE_START + element + ENCODE_END;
-  }
-  return '';
-};
 
 export const style: Partial<StyleOptions> = {};
 
