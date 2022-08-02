@@ -9,13 +9,13 @@ import {
   isFunction,
   isObject,
   isPlainObject,
-} from '../core.util';
+} from '../lang.util';
 
 function Foo(a: number) {
   this.a = 1;
 }
 
-describe('core.util', () => {
+describe('lang.util', () => {
   describe('isUndefined', () => {
     it('should return true when value is undefined', () => {
       expect(isUndefined()).toBe(true);

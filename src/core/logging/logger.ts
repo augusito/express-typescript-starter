@@ -1,4 +1,4 @@
-import { isPlainObject, isString } from '../utils/core.util';
+import { isPlainObject, isString } from '../utils/lang.util';
 import { LogLevel, Log, LoggerOptions } from './interfaces';
 import { DEFAULT_LOG_LEVELS } from './constants';
 import { isLogLevelEnabled } from './utils';
@@ -31,7 +31,6 @@ export default class Logger implements Log {
 
     const { messages, context, stack } =
       this.getContextAndStackAndMessagesToPrint([message, ...options]);
-
     this.printMessages(messages, context, 'error', 'stderr');
     this.printStackTrace(stack);
   }
@@ -61,7 +60,6 @@ export default class Logger implements Log {
       message,
       ...options,
     ]);
-
     this.printMessages(messages, context, 'info');
   }
 
@@ -76,7 +74,6 @@ export default class Logger implements Log {
       message,
       ...options,
     ]);
-
     this.printMessages(messages, context, 'verbose');
   }
 
@@ -91,7 +88,6 @@ export default class Logger implements Log {
       message,
       ...options,
     ]);
-
     this.printMessages(messages, context, 'debug');
   }
 
@@ -113,7 +109,6 @@ export default class Logger implements Log {
 
   isLevelEnabled(level: LogLevel): boolean {
     const logLevels = this.options?.logLevels;
-
     return isLogLevelEnabled(level, logLevels);
   }
 
@@ -134,7 +129,6 @@ export default class Logger implements Log {
         formattedLogLevel,
         contextMessage,
       );
-
       process[writeStreamType ?? 'stdout'].write(formattedMessage);
     });
   }
@@ -147,7 +141,6 @@ export default class Logger implements Log {
     contextMessage: string,
   ) {
     message = this.stringifyMessage(message, logLevel);
-
     return `${this.getTimestamp()} ${formattedLogLevel} ${pidMessage} ${contextMessage} : ${message}\n`;
   }
 
