@@ -1,5 +1,6 @@
 import { isPlainObject, isString } from '../utils/lang.util';
 import { LogLevel, Log, LoggerOptions } from './interfaces';
+import { color } from '../ansi';
 import { DEFAULT_LOG_LEVELS } from './constants';
 import { isLogLevelEnabled } from './utils';
 
@@ -120,12 +121,14 @@ export default class Logger implements Log {
   ) {
     messages.forEach((message) => {
       const pidMessage = this.formatPid(process.pid);
-      const contextMessage = this.formatContext(context, 20);
+      const threadName = this.getThreadName().padStart(7, ' ');
       const formattedLogLevel = logLevel.toUpperCase().padStart(7, ' ');
+      const contextMessage = this.formatContext(context, 20);
       const formattedMessage = this.formatMessage(
         logLevel,
         message,
         pidMessage,
+        threadName,
         formattedLogLevel,
         contextMessage,
       );
@@ -137,16 +140,20 @@ export default class Logger implements Log {
     logLevel: LogLevel,
     message: unknown,
     pidMessage: string,
+    threadName: string,
     formattedLogLevel: string,
     contextMessage: string,
   ) {
     message = this.stringifyMessage(message, logLevel);
-    return `${this.getTimestamp()} ${formattedLogLevel} ${pidMessage} ${contextMessage} : ${message}\n`;
+    pidMessage = color.magenta(pidMessage);
+    formattedLogLevel = this.colorize(formattedLogLevel, logLevel);
+    contextMessage = color.cyan(contextMessage);
+    return `${this.getTimestamp()} ${formattedLogLevel} ${pidMessage} - [${threadName}] ${contextMessage} : ${message}\n`;
   }
 
   protected stringifyMessage(message: unknown, logLevel: LogLevel) {
     return isPlainObject(message)
-      ? `${JSON.stringify(
+      ? `${this.colorize('Object:', logLevel)}\n${JSON.stringify(
           message,
           (key, value) =>
             typeof value === 'bigint' ? value.toString() : value,
@@ -173,12 +180,21 @@ export default class Logger implements Log {
     return new Date().toISOString().replace('T', ' ').substring(0, 23);
   }
 
+  protected colorize(message: string, logLevel: LogLevel) {
+    const color = this.getColorByLogLevel(logLevel);
+    return color(message);
+  }
+
   protected printStackTrace(stack: string) {
     if (!stack) {
       return;
     }
 
     process.stderr.write(`${stack}\n`);
+  }
+
+  protected getThreadName() {
+    return 'main';
   }
 
   private getContextAndMessagesToPrint(args: unknown[]) {
@@ -218,5 +234,20 @@ export default class Logger implements Log {
       messages: messages.slice(0, messages.length - 1),
       context,
     };
+  }
+
+  private getColorByLogLevel(level: LogLevel) {
+    switch (level) {
+      case 'error':
+        return color.red;
+      case 'warn':
+        return color.yellow;
+      case 'verbose':
+        return color.blackBright;
+      case 'debug':
+        return color.blue;
+      default:
+        return color.green;
+    }
   }
 }
