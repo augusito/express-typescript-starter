@@ -6,7 +6,7 @@ import { ProviderToken } from './provider-token.interface';
 export interface IContainer {
   /**
    * Find an entry of the container based on the provided token.
-   * @param token the provider token to find an entry
+   * @param token the provider token of the entry to look for
    * @returns an entry from the container if defined
    * @throws NotFoundException if no entry was found for the token
    * @throws ContainerException if error while retrieving the entry
