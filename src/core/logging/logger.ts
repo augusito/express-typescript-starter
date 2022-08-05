@@ -30,6 +30,7 @@ export default class Logger implements Log {
       return;
     }
 
+    options = this.context ? options.concat(this.context) : options;
     const { messages, context, stack } =
       this.getContextAndStackAndMessagesToPrint([message, ...options]);
     this.printMessages(messages, context, 'error', 'stderr');
@@ -43,6 +44,7 @@ export default class Logger implements Log {
       return;
     }
 
+    options = this.context ? options.concat(this.context) : options;
     const { messages, context } = this.getContextAndMessagesToPrint([
       message,
       ...options,
@@ -57,6 +59,7 @@ export default class Logger implements Log {
       return;
     }
 
+    options = this.context ? options.concat(this.context) : options;
     const { messages, context } = this.getContextAndMessagesToPrint([
       message,
       ...options,
@@ -71,6 +74,7 @@ export default class Logger implements Log {
       return;
     }
 
+    options = this.context ? options.concat(this.context) : options;
     const { messages, context } = this.getContextAndMessagesToPrint([
       message,
       ...options,
@@ -85,6 +89,7 @@ export default class Logger implements Log {
       return;
     }
 
+    options = this.context ? options.concat(this.context) : options;
     const { messages, context } = this.getContextAndMessagesToPrint([
       message,
       ...options,
