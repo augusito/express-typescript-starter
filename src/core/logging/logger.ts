@@ -158,7 +158,7 @@ export default class Logger implements Log {
 
   protected stringifyMessage(message: unknown, logLevel: LogLevel) {
     return isPlainObject(message)
-      ? `${this.colorize('Object:', logLevel)}\n${JSON.stringify(
+      ? `Object:\n${JSON.stringify(
           message,
           (key, value) =>
             typeof value === 'bigint' ? value.toString() : value,
