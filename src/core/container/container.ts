@@ -80,6 +80,33 @@ export default class Container implements IContainer {
   }
 
   /**
+   * Check if the given provider is a value provider.
+   * @param provider the provider to check
+   * @returns whether the given provider is a value provider
+   */
+  public isValueProvider(provider: Provider): provider is ValueProvider {
+    return !isUndefined((provider as ValueProvider).useValue);
+  }
+
+  /**
+   * Check if the given provider is a factory provider.
+   * @param provider the provider to check
+   * @returns whether the given provider is a factory provider
+   */
+  public isFactoryProvider(provider: Provider): provider is FactoryProvider {
+    return !isUndefined((provider as FactoryProvider).useFactory);
+  }
+
+  /**
+   * Check if the given provider is an alias provider.
+   * @param provider the provider to check
+   * @returns whether the given provider is an alias provider
+   */
+  public isExistingProvider(provider: Provider): provider is ExistingProvider {
+    return !isUndefined((provider as ExistingProvider).useExisting);
+  }
+
+  /**
    * Actually create a new service instance for the provider token.
    * @param token the provider token of the requested service
    * @returns the actual service instance that should be injected
@@ -111,33 +138,6 @@ export default class Container implements IContainer {
       return factory;
     }
     return factory;
-  }
-
-  /**
-   * Check if the given provider is a value provider.
-   * @param provider the provider to check
-   * @returns whether the given provider is a value provider
-   */
-  public isValueProvider(provider: Provider): provider is ValueProvider {
-    return !isUndefined((provider as ValueProvider).useValue);
-  }
-
-  /**
-   * Check if the given provider is a factory provider.
-   * @param provider the provider to check
-   * @returns whether the given provider is a factory provider
-   */
-  public isFactoryProvider(provider: Provider): provider is FactoryProvider {
-    return !isUndefined((provider as FactoryProvider).useFactory);
-  }
-
-  /**
-   * Check if the given provider is an alias provider.
-   * @param provider the provider to check
-   * @returns whether the given provider is an alias provider
-   */
-  public isExistingProvider(provider: Provider): provider is ExistingProvider {
-    return !isUndefined((provider as ExistingProvider).useExisting);
   }
 
   /**
