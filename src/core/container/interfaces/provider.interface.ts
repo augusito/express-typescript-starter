@@ -1,4 +1,5 @@
 import { Factory } from './factory.interface';
+import { NoArgument } from './no-argument.interface';
 
 /**
  * Configures the `Container` to return a value for a token.
@@ -13,6 +14,21 @@ export interface ValueProvider<T = any> {
    * The value to inject.
    */
   useValue: T;
+}
+
+/**
+ * Configures the `Container` to return an instance of `useClass` for a token.
+ */
+export interface ClassProvider<T = any> {
+  /**
+   * A provider token. Typically an instance of `ProviderToken`, but can be `any`.
+   */
+  provide: any;
+
+  /**
+   * Class to instantiate for the `token`.
+   */
+  useClass: NoArgument<T>;
 }
 
 /**
@@ -47,5 +63,6 @@ export interface ExistingProvider<T = any> {
 
 export type Provider<T = any> =
   | ValueProvider<T>
+  | ClassProvider<T>
   | FactoryProvider<T>
   | ExistingProvider<T>;

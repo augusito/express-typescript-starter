@@ -1,10 +1,13 @@
 import {
+  ClassProvider,
   ExistingProvider,
   Factory,
   FactoryProvider,
   IContainer,
+  NoArgument,
   Provider,
   ProviderToken,
+  Type,
   ValueProvider,
 } from './interfaces';
 import { isUndefined } from '../utils/lang.util';
@@ -35,6 +38,9 @@ export default class Container implements IContainer {
     for (const provider of providers) {
       if (this.isValueProvider(provider)) {
         this.services.set(provider.provide, provider.useValue);
+      } else if (this.isClassProvider(provider)) {
+        const factory: () => any = this.classToFactory(provider.useClass);
+        this.factories.set(provider.provide, factory);
       } else if (this.isFactoryProvider(provider)) {
         this.factories.set(provider.provide, provider.useFactory);
       } else if (this.isExistingProvider(provider)) {
@@ -86,6 +92,15 @@ export default class Container implements IContainer {
    */
   public isValueProvider(provider: Provider): provider is ValueProvider {
     return !isUndefined((provider as ValueProvider).useValue);
+  }
+
+  /**
+   * Check if the given provider is a class provider.
+   * @param provider the provider to check
+   * @returns whether the given provider is a class provider
+   */
+  public isClassProvider(provider: Provider): provider is ClassProvider {
+    return !isUndefined((provider as ClassProvider).useClass);
   }
 
   /**
@@ -183,5 +198,31 @@ export default class Container implements IContainer {
         tagged.set(alias, true);
       }
     }
+  }
+
+  /**
+   * Convert a type to a factory function - expect a defult (no-argument) constructor.
+   * @param type the type to convert
+   * @returns the factory used to create the instance that should be injected
+   * @throws TypeError if type not valid
+   */
+  private classToFactory(type: NoArgument): () => any {
+    if (!this.isNewable(type)) {
+      throw new TypeError('Unable to instantiate class');
+    }
+    const paramLength = type.length;
+    if (paramLength > 0) {
+      throw new TypeError('An invalid class type detected');
+    }
+    return () => new (type as NoArgument<any>)();
+  }
+
+  /**
+   * Check if the given type can be instantiated.
+   * @param type the type to check
+   * @returns whether the given type can be instantiated
+   */
+  private isNewable(type: Type): boolean {
+    return type && isType(type) && type.prototype;
   }
 }

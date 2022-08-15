@@ -42,9 +42,7 @@ function createContainer(providers: Provider[]): Container {
 
 describe('Container', () => {
   it('should instantiate a class without dependencies', () => {
-    const container = createContainer([
-      { provide: Engine, useValue: new Engine() },
-    ]);
+    const container = createContainer([{ provide: Engine, useClass: Engine }]);
     const engine = container.get(Engine);
 
     expect(engine).toBeInstanceOf(Engine);
@@ -52,7 +50,7 @@ describe('Container', () => {
 
   it('should resolve dependencies based on the constructor', () => {
     const container = createContainer([
-      { provide: Engine, useValue: new Engine() },
+      { provide: Engine, useClass: Engine },
       {
         provide: Car,
         useFactory: (container: Container) => new Car(container.get(Engine)),
@@ -65,9 +63,7 @@ describe('Container', () => {
   });
 
   it('should cache instances', () => {
-    const container = createContainer([
-      { provide: Engine, useValue: new Engine() },
-    ]);
+    const container = createContainer([{ provide: Engine, useClass: Engine }]);
 
     const a1 = container.get(Engine);
     const a2 = container.get(Engine);
@@ -89,7 +85,7 @@ describe('Container', () => {
       return new SportsCar(container.get(Engine));
     }
     const container = createContainer([
-      { provide: Engine, useValue: new Engine() },
+      { provide: Engine, useClass: Engine },
       { provide: Car, useFactory: sportsCarFactory },
     ]);
     const car = container.get<Car>(Car);
@@ -107,7 +103,7 @@ describe('Container', () => {
 
   it('should provide to an alias', () => {
     const container = createContainer([
-      { provide: Engine, useValue: new Engine() },
+      { provide: Engine, useClass: Engine },
       {
         provide: SportsCar,
         useFactory: (container: Container) =>
@@ -132,7 +128,7 @@ describe('Container', () => {
 
   it('should support overriding factory dependencies', () => {
     const container = createContainer([
-      { provide: Engine, useValue: new Engine() },
+      { provide: Engine, useClass: Engine },
       {
         provide: Car,
         useFactory: (container: Container) =>
@@ -159,8 +155,8 @@ describe('Container', () => {
 
   it('should use the last provider when there are multiple providers for same token', () => {
     const container = createContainer([
-      { provide: Engine, useValue: new Engine() },
-      { provide: Engine, useValue: new TurboEngine() },
+      { provide: Engine, useClass: Engine },
+      { provide: Engine, useClass: TurboEngine },
     ]);
 
     expect(container.get(Engine)).toBeInstanceOf(TurboEngine);
@@ -173,13 +169,13 @@ describe('Container', () => {
         useFactory: (container: Container) =>
           new CarWithDashboard(container.get(Engine), container.get(Dashboard)),
       },
-      { provide: Engine, useValue: new Engine() },
+      { provide: Engine, useClass: Engine },
       {
         provide: Dashboard,
         useFactory: (container: Container) =>
           new Dashboard(container.get(DashboardSoftware)),
       },
-      { provide: DashboardSoftware, useValue: DashboardSoftware },
+      { provide: DashboardSoftware, useClass: DashboardSoftware },
     ]);
     const car = container.get<CarWithDashboard>(CarWithDashboard);
 
@@ -195,7 +191,7 @@ describe('Container', () => {
         useFactory: (container: Container) =>
           new CarWithDashboard(container.get(Engine), container.get(Dashboard)),
       },
-      { provide: Engine, useValue: new Engine() },
+      { provide: Engine, useClass: Engine },
       {
         provide: Dashboard,
         useFactory: (container: Container) =>
@@ -212,8 +208,8 @@ describe('Container', () => {
   it('should throw when cyclic aliases detetected', () => {
     try {
       createContainer([
-        { provide: Engine, useValue: new Engine() },
-        { provide: Engine, useValue: new TurboEngine() },
+        { provide: Engine, useClass: Engine },
+        { provide: Engine, useClass: TurboEngine },
         { provide: TurboEngine, useExisting: TurboEngine },
       ]);
     } catch (error) {
@@ -224,7 +220,7 @@ describe('Container', () => {
 
   it('shoul fail to instantiate when error happens in a constructor', () => {
     try {
-      createContainer([{ provide: Engine, useValue: new BrokenEngine() }]);
+      createContainer([{ provide: Engine, useClass: BrokenEngine }]);
     } catch (error) {
       // eslint-disable-next-line jest/no-conditional-expect
       expect(error.message).toContain('Broken Engine');
