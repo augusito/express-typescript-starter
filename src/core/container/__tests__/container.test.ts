@@ -227,6 +227,57 @@ describe('Container', () => {
     }
   });
 
+  it('should add a single value provider', () => {
+    const container = createContainer([]);
+    container.addProvider({ provide: String, useValue: 'Hello' });
+
+    expect(container.get(String)).toEqual('Hello');
+  });
+
+  it('should add a single class provider', () => {
+    const container = createContainer([]);
+    container.addProvider({ provide: Engine, useClass: TurboEngine });
+    const engine: Engine = container.get(Engine);
+
+    expect(engine instanceof TurboEngine).toBe(true);
+  });
+
+  it('should add a single factory provider', () => {
+    const container = createContainer([]);
+    container.addProvider({
+      provide: Engine,
+      useClass: Engine,
+    });
+    container.addProvider({
+      provide: Car,
+      useFactory: (container: Container) =>
+        new SportsCar(container.get(Engine)),
+    });
+    const car: Car = container.get(Car);
+
+    expect(car instanceof SportsCar).toBe(true);
+  });
+
+  it('should add a single alias provider', () => {
+    const container = createContainer([]);
+    container.addProvider({
+      provide: TurboEngine,
+      useClass: TurboEngine,
+    });
+    container.addProvider({
+      provide: Engine,
+      useExisting: TurboEngine,
+    });
+
+    expect(container.get(Engine)).toBe(container.get(TurboEngine));
+  });
+
+  it('should throw when given invalid single provider', () => {
+    expect(() => createContainer([]).addProvider(<any>'blah')).toThrowError(
+      'Invalid provider definition',
+    );
+  });
+
   it('should use non-type tokens', () => {
     const container = createContainer([
       { provide: 'token', useValue: 'value' },

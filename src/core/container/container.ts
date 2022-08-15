@@ -86,6 +86,29 @@ export default class Container implements IContainer {
   }
 
   /**
+   * Add the given provider to the container.
+   * @param provider the provider to add
+   * @returns the added provider
+   * @throws TypeError if an invalid provider definition
+   */
+  public addProvider(provider: Provider) {
+    if (this.isValueProvider(provider)) {
+      this.services.set(provider.provide, provider.useValue);
+    } else if (this.isClassProvider(provider)) {
+      const factory: () => any = this.classToFactory(provider.useClass);
+      this.factories.set(provider.provide, factory);
+    } else if (this.isFactoryProvider(provider)) {
+      this.factories.set(provider.provide, provider.useFactory);
+    } else if (this.isExistingProvider(provider)) {
+      const { useExisting: target, provide: alias } = provider;
+      this.mapAliasToTarget(alias, target);
+    } else {
+      throw new TypeError('Invalid provider definition');
+    }
+    return provider;
+  }
+
+  /**
    * Check if the given provider is a value provider.
    * @param provider the provider to check
    * @returns whether the given provider is a value provider
@@ -153,6 +176,19 @@ export default class Container implements IContainer {
       return factory;
     }
     return factory;
+  }
+
+  /**
+   * Map a particular token to another for a given service instance.
+   * @param alias the token to locate service associated with the target token
+   * @param target the token associated with a given service instance
+   */
+  private mapAliasToTarget(alias: ProviderToken, target: ProviderToken): void {
+    const nTarget = this.aliases.get(target) ?? target;
+    this.aliases.set(alias, nTarget);
+    if (alias === this.aliases.get(alias)) {
+      throw new Error('A cycle has been detected');
+    }
   }
 
   /**
