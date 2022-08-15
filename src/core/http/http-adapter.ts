@@ -110,6 +110,14 @@ export default class HttpAdapter {
     return this;
   }
 
+  public enabled(...args: any[]): boolean {
+    return this.instance.enabled(...args);
+  }
+
+  public disabled(...args: any[]): boolean {
+    return this.instance.disabled(...args);
+  }
+
   public enable(...args: any[]) {
     return this.instance.enable(...args);
   }
@@ -149,7 +157,7 @@ export default class HttpAdapter {
     return request.originalUrl;
   }
 
-  public enableCors(options: any) {
+  public enableCors(options: cors.CorsOptions | cors.CorsOptionsDelegate<any>) {
     return this.use(cors(options));
   }
 
