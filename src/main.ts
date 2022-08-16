@@ -1,11 +1,14 @@
+import { Application } from './core/application/application';
 import { HttpAdapter } from './core/http';
+import { LogFactory } from './core/logging';
 
-(() => {
-  console.log('Hello World!'); // Display the string.
-  const httpAdapter = new HttpAdapter();
-  httpAdapter.initHttpServer({});
-  httpAdapter.get('/', (req, res) => {
+(async () => {
+  const logger = LogFactory.getLog(Application.name);
+  const app = new Application(new HttpAdapter(), { cors: true });
+  app.getHttpAdapter().get('/', (req, res) => {
     res.send('Hello world!');
   });
-  httpAdapter.listen(3002);
+
+  await app.listen(3000);
+  logger.info(`Application started on: ${await app.getUrl()}`);
 })();
