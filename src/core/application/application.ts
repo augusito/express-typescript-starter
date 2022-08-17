@@ -3,7 +3,7 @@ import { platform } from 'os';
 import { HttpAdapter } from '../http';
 import { LogFactory } from '../logging';
 import { isFunction, isObject, isString } from '../utils/lang.util';
-import { AppOptions } from './interfaces';
+import { ApplicationOptions } from './interfaces';
 
 export class Application {
   private readonly logger = LogFactory.getLog(Application.name);
@@ -13,7 +13,7 @@ export class Application {
 
   constructor(
     private readonly httpAdapter: HttpAdapter,
-    private readonly appOptions: AppOptions = {},
+    private readonly options: ApplicationOptions = {},
   ) {
     this.registerHttpServer();
   }
@@ -25,8 +25,7 @@ export class Application {
 
     this.applyOptions();
 
-    const useBodyParser =
-      this.appOptions && this.appOptions.bodyParser !== false;
+    const useBodyParser = this.options && this.options.bodyParser !== false;
     useBodyParser && this.registerParserMiddleware();
 
     this.isInitialized = true;
@@ -43,19 +42,19 @@ export class Application {
   }
 
   public applyOptions() {
-    if (!this.appOptions || !this.appOptions.cors) {
+    if (!this.options || !this.options.cors) {
       return undefined;
     }
 
     const passCustomOptions =
-      isObject(this.appOptions.cors) || isFunction(this.appOptions.cors);
+      isObject(this.options.cors) || isFunction(this.options.cors);
 
     if (!passCustomOptions) {
       return this.enableCors();
     }
 
     return this.enableCors(
-      this.appOptions.cors as CorsOptions | CorsOptionsDelegate<any>,
+      this.options.cors as CorsOptions | CorsOptionsDelegate<any>,
     );
   }
 
@@ -72,7 +71,7 @@ export class Application {
   }
 
   public createServer<T = any>(): T {
-    this.httpAdapter.initHttpServer(this.appOptions);
+    this.httpAdapter.initHttpServer(this.options);
     return this.httpAdapter.getHttpServer() as T;
   }
 
@@ -81,7 +80,7 @@ export class Application {
   }
 
   public registerParserMiddleware() {
-    const rawBody = !!this.appOptions?.rawBody;
+    const rawBody = !!this.options?.rawBody;
     this.httpAdapter.registerParserMiddleware(rawBody);
   }
 
@@ -170,6 +169,6 @@ export class Application {
   }
 
   private getProtocol(): 'http' | 'https' {
-    return this.appOptions && this.appOptions.httpsOptions ? 'https' : 'http';
+    return this.options && this.options.httpsOptions ? 'https' : 'http';
   }
 }

@@ -1,7 +1,7 @@
 import { CorsOptions, CorsOptionsDelegate } from 'cors';
 import { HttpsOptions } from '../../http';
 
-export interface AppOptions {
+export interface ApplicationOptions {
   /**
    * CORS configuration options
    */
