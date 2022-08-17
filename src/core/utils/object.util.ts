@@ -3,7 +3,7 @@
  * props. This ends up faster than using object ...rest or reduce to filter.
  * @param obj the object to clone
  * @param exclusions the array of keys to exclude
- * @returns the cloned object omitting specified keys
+ * @returns the cloned object excluding omitted props
  */
 export function omit<TObj extends Record<string, any>>(
   obj: TObj,
