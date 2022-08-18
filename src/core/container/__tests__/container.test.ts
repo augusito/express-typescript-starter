@@ -218,6 +218,30 @@ describe('Container', () => {
     }
   });
 
+  it('should return true when provider exist', () => {
+    const container = createContainer([
+      { provide: String, useValue: 'Hello' },
+      { provide: Engine, useClass: Engine },
+      {
+        provide: SportsCar,
+        useFactory: (container: Container) =>
+          new SportsCar(container.get(Engine)),
+      },
+      { provide: Car, useExisting: SportsCar },
+    ]);
+
+    expect(container.has(String)).toBe(true); // service
+    expect(container.has(Engine)).toBe(true); // class
+    expect(container.has(SportsCar)).toBe(true); // factory
+    expect(container.has(Car)).toBe(true); // alias
+  });
+
+  it('should return false when provider does not exist', () => {
+    const container = createContainer([]);
+
+    expect(container.has('NonExisting')).toBe(false);
+  });
+
   it('shoul fail to instantiate when error happens in a constructor', () => {
     try {
       createContainer([{ provide: Engine, useClass: BrokenEngine }]);

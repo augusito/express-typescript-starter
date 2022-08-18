@@ -86,6 +86,22 @@ export default class Container implements IContainer {
   }
 
   /**
+   * Check if an entry for the given provider token exists.
+   * @param token the provider token of the entry to look for
+   * @returns whether an entry for the given provider exists
+   */
+  public has(token: ProviderToken): boolean {
+    if (this.services.has(token) || this.factories.has(token)) {
+      return true;
+    }
+    const resolvedToken = this.aliases.get(token) ?? token;
+    if (resolvedToken !== token) {
+      return this.has(resolvedToken);
+    }
+    return false;
+  }
+
+  /**
    * Add the given provider to the container.
    * @param provider the provider to add
    * @returns the added provider
