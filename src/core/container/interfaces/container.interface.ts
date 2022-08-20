@@ -12,4 +12,11 @@ export interface IContainer {
    * @throws ContainerException if error while retrieving the entry
    */
   get<T>(token: ProviderToken): T;
+
+  /**
+   * Check if an entry for the given provider token exists.
+   * @param token the provider token of the entry to look for
+   * @returns whether an entry for the given provider exists
+   */
+  has(token: ProviderToken): boolean;
 }
