@@ -1,4 +1,4 @@
-import { Application } from './core/application/application';
+import { Application } from './core/application';
 import { HttpAdapter } from './core/http';
 import { LogFactory } from './core/logging';
 
