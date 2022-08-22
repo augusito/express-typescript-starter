@@ -21,50 +21,50 @@ export class HttpAdapter {
     return this.instance.use(...args);
   }
 
-  public get(handler: RequestHandler);
-  public get(path: any, handler: RequestHandler);
+  public get(handler: RequestHandler[] | RequestHandler);
+  public get(path: any, handler: RequestHandler[] | RequestHandler);
   public get(...args: any[]) {
     return this.instance.get(...args);
   }
 
-  public post(handler: RequestHandler);
-  public post(path: any, handler: RequestHandler);
+  public post(handler: RequestHandler[] | RequestHandler);
+  public post(path: any, handler: RequestHandler[] | RequestHandler);
   public post(...args: any[]) {
     return this.instance.post(...args);
   }
 
-  public head(handler: RequestHandler);
-  public head(path: any, handler: RequestHandler);
+  public head(handler: RequestHandler[] | RequestHandler);
+  public head(path: any, handler: RequestHandler[] | RequestHandler);
   public head(...args: any[]) {
     return this.instance.head(...args);
   }
 
-  public delete(handler: RequestHandler);
-  public delete(path: any, handler: RequestHandler);
+  public delete(handler: RequestHandler[] | RequestHandler);
+  public delete(path: any, handler: RequestHandler[] | RequestHandler);
   public delete(...args: any[]) {
     return this.instance.delete(...args);
   }
 
-  public put(handler: RequestHandler);
-  public put(path: any, handler: RequestHandler);
+  public put(handler: RequestHandler[] | RequestHandler);
+  public put(path: any, handler: RequestHandler[] | RequestHandler);
   public put(...args: any[]) {
     return this.instance.put(...args);
   }
 
-  public patch(handler: RequestHandler);
-  public patch(path: any, handler: RequestHandler);
+  public patch(handler: RequestHandler[] | RequestHandler);
+  public patch(path: any, handler: RequestHandler[] | RequestHandler);
   public patch(...args: any[]) {
     return this.instance.patch(...args);
   }
 
-  public all(handler: RequestHandler);
-  public all(path: any, handler: RequestHandler);
+  public all(handler: RequestHandler[] | RequestHandler);
+  public all(path: any, handler: RequestHandler[] | RequestHandler);
   public all(...args: any[]) {
     return this.instance.all(...args);
   }
 
-  public options(handler: RequestHandler);
-  public options(path: any, handler: RequestHandler);
+  public options(handler: RequestHandler[] | RequestHandler);
+  public options(path: any, handler: RequestHandler[] | RequestHandler);
   public options(...args: any[]) {
     return this.instance.options(...args);
   }
