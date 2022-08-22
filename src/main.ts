@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { Application } from './core/application';
 import { HttpAdapter } from './core/http';
 import { LogFactory } from './core/logging';
@@ -5,7 +6,7 @@ import { LogFactory } from './core/logging';
 (async () => {
   const logger = LogFactory.getLog(Application.name);
   const app = new Application(new HttpAdapter(), { cors: true });
-  app.getHttpAdapter().get('/', (req, res) => {
+  app.get('/', (req: Request, res: Response) => {
     res.send('Hello world!');
   });
 

@@ -33,6 +33,10 @@ export class Application {
     return this;
   }
 
+  public get(path: any, handler: any) {
+    return this.httpAdapter.get(path, handler);
+  }
+
   public async close(): Promise<void> {
     await this.dispose();
   }
