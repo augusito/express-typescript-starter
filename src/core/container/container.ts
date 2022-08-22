@@ -13,7 +13,7 @@ import {
 import { isUndefined } from '../utils/lang.util';
 import { isType } from './utils';
 
-export default class Container implements IContainer {
+export class Container implements IContainer {
   private readonly services = new Map<ProviderToken, any>();
   private readonly factories = new Map<ProviderToken, Factory<any>>();
   private readonly aliases = new Map<ProviderToken, any>();

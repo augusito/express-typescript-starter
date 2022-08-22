@@ -4,7 +4,7 @@ import { color } from '../ansi';
 import { DEFAULT_LOG_LEVELS } from './constants';
 import { isLogLevelEnabled } from './utils';
 
-export default class Logger implements Log {
+export class Logger implements Log {
   private originalContext?: string;
 
   constructor();

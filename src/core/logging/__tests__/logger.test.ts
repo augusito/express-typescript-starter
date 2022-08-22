@@ -1,4 +1,4 @@
-import LogFactory from '../log-factory';
+import { LogFactory } from '../log-factory';
 
 describe('Logger', () => {
   describe('with local context', () => {

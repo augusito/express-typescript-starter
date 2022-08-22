@@ -5,7 +5,7 @@ import { LogFactory } from '../logging';
 import { isFunction, isObject, isString } from '../utils/lang.util';
 import { ApplicationOptions } from './interfaces';
 
-export default class Application {
+export class Application {
   private readonly logger = LogFactory.getLog(Application.name);
   private isInitialized = false;
   private isListening = false;

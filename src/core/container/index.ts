@@ -1,3 +1,3 @@
-export { default as Container } from './container';
+export * from './container';
 // interfaces
 export * from './interfaces';

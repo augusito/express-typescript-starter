@@ -12,7 +12,7 @@ import { isFunction } from '../utils/lang.util';
 import { RequestHandler } from './interfaces';
 import { getBodyParserOptions } from './utils';
 
-export default class HttpAdapter {
+export class HttpAdapter {
   protected httpServer: any;
 
   constructor(protected instance: any = express()) {}
