@@ -1,7 +1,7 @@
 import { Type } from '../container';
 import { isType } from '../container/utils';
 import { callableMiddlewareDecorator } from './middleware/callable-middleware-decorator';
-import { HandlerMiddlewareDecorator } from './middleware/handler-middleware-decorator';
+import { RequestHandlerMiddleware } from './middleware/request-handler-middleware';
 
 export class MiddlewareFactory {
   public prepare(middleware: any) {
@@ -28,8 +28,8 @@ export class MiddlewareFactory {
     return new callableMiddlewareDecorator(middleware);
   }
 
-  public handler(middleware: Type): HandlerMiddlewareDecorator {
-    return new HandlerMiddlewareDecorator(middleware);
+  public handler(middleware: Type): RequestHandlerMiddleware {
+    return new RequestHandlerMiddleware(middleware);
   }
 
   public pipeline(...middleware: any[]) {
