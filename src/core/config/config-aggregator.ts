@@ -1,7 +1,7 @@
 import { merge } from './utils';
 
 export class ConfigAggregator {
-  private config = {};
+  private config: any;
   constructor(options = []) {
     this.config = this.loadConfig(options);
   }

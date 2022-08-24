@@ -1,5 +1,5 @@
-import { Application, MiddlewareFactory } from './core/application';
-import { HttpAdapter } from './core/http';
+import container from '../config/container';
+import { Application } from './core/application';
 import { LogFactory } from './core/logging';
 
 class AppService {
@@ -19,9 +19,7 @@ class AppHandler {
 
 (async () => {
   const logger = LogFactory.getLog(Application.name);
-  const app = new Application(new HttpAdapter(), new MiddlewareFactory(), {
-    cors: true,
-  });
+  const app = container.get<Application>(Application.name);
   app.get('/', new AppHandler(new AppService()));
 
   await app.listen(3000);
