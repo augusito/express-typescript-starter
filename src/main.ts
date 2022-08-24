@@ -17,13 +17,12 @@ class AppHandler {
   }
 }
 
-const factory = new MiddlewareFactory();
-const middleware = factory.prepare(new AppHandler(new AppService()));
-
 (async () => {
   const logger = LogFactory.getLog(Application.name);
-  const app = new Application(new HttpAdapter(), { cors: true });
-  app.get('/', middleware.process.bind(middleware));
+  const app = new Application(new HttpAdapter(), new MiddlewareFactory(), {
+    cors: true,
+  });
+  app.get('/', new AppHandler(new AppService()));
 
   await app.listen(3000);
   logger.info(`Application started on: ${await app.getUrl()}`);

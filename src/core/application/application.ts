@@ -4,6 +4,7 @@ import { HttpAdapter } from '../http';
 import { LogFactory } from '../logging';
 import { isFunction, isObject, isString } from '../utils/lang.util';
 import { ApplicationOptions } from './interfaces';
+import { MiddlewareFactory } from './middleware-factory';
 
 export class Application {
   private readonly logger = LogFactory.getLog(Application.name);
@@ -13,6 +14,7 @@ export class Application {
 
   constructor(
     private readonly httpAdapter: HttpAdapter,
+    private readonly factory: MiddlewareFactory,
     private readonly options: ApplicationOptions = {},
   ) {
     this.registerHttpServer();
@@ -34,7 +36,7 @@ export class Application {
   }
 
   public get(path: any, handler: any) {
-    return this.httpAdapter.get(path, handler);
+    return this.httpAdapter.get(path, this.bindHandler(handler));
   }
 
   public async close(): Promise<void> {
@@ -174,5 +176,14 @@ export class Application {
 
   private getProtocol(): 'http' | 'https' {
     return this.options && this.options.httpsOptions ? 'https' : 'http';
+  }
+
+  private bindHandler(handler: any) {
+    let middleware = this.factory.prepare(handler);
+    if (!Array.isArray(middleware)) {
+      middleware = [middleware];
+    }
+
+    return middleware.map((mid: any) => mid.process.bind(mid));
   }
 }
