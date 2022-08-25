@@ -8,5 +8,5 @@ container.addProvider({
   provide: 'config',
   useValue: omit(config, ['providers']),
 });
-
+console.log(container);
 export default container;

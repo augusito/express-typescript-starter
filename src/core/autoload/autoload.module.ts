@@ -6,7 +6,6 @@ export class AutoloadModule {
     let config = {};
     // Load configuration from autoload path
     const files = glob.sync(pattern);
-    console.log(files);
     // Require each file in the autload dir
     files.forEach((file: any) => {
       config = Object.assign(config, dynamicRequire(file));

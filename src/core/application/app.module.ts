@@ -25,9 +25,12 @@ export class AppModule {
         {
           provide: Application.name,
           useFactory: (container: IContainer) => {
+            const config: any = container.get('config') ?? {};
+            const appOptions = config.app?.options ?? {};
             return new Application(
               container.get(HttpAdapter.name),
               container.get(MiddlewareFactory.name),
+              appOptions,
             );
           },
         },

@@ -9,7 +9,9 @@ const aggregator = new ConfigAggregator([
   HttpModule.register(),
   AppModule.register(),
   UserModule.register(),
-  AutoloadModule.register(join(__dirname, 'autoload/*.(js|ts)')),
+  AutoloadModule.register(
+    join(__dirname, 'autoload/{{,*.}global,{,*.}local}.+(j|t)s'),
+  ),
 ]);
 
 export default aggregator.getMergedConfig();
