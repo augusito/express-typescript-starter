@@ -22,6 +22,6 @@ export class UserModule {
   }
 
   static registerRoutes(app: Application) {
-    app.get('/', UserHandler.name);
+    app.get('/users', UserHandler.name);
   }
 }
