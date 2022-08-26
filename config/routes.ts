@@ -1,4 +1,4 @@
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../src/user/user.module';
 import { Application } from '../src/core/application';
 
 export default (app: Application) => {
