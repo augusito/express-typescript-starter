@@ -4,7 +4,7 @@ import { Application } from './application';
 import { MiddlewareContainer } from './middleware-container';
 import { MiddlewareFactory } from './middleware-factory';
 
-export class AppModule {
+export class ApplicationModule {
   static register() {
     return {
       providers: [
