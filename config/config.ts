@@ -14,4 +14,6 @@ const aggregator = new ConfigAggregator([
   ),
 ]);
 
-export default aggregator.getMergedConfig();
+const config = aggregator.getMergedConfig();
+
+export { config };

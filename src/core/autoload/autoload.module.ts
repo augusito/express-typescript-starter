@@ -1,5 +1,5 @@
 import * as glob from 'glob';
-import dynamicRequire from '../utils/dynamic-require';
+import { dynamicRequire } from '../utils/dynamic-require';
 
 export class AutoloadModule {
   static register(pattern: any) {

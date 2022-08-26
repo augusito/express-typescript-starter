@@ -1,7 +1,7 @@
-import container from '../config/container';
-import dynamicRequire from './core/utils/dynamic-require';
+import { container } from '../config/container';
 import { Application } from './core/application';
 import { LogFactory } from './core/logging';
+import { dynamicRequire } from './core/utils/dynamic-require';
 
 (async () => {
   const logger = LogFactory.getLog(Application.name);
