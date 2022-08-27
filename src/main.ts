@@ -6,7 +6,8 @@ import { dynamicRequire } from './core/utils/dynamic-require';
 (async () => {
   const logger = LogFactory.getLog(Application.name);
   const app = container.get<Application>(Application.name);
-  dynamicRequire('config/routes')(app);
   await app.listen(3000);
+
+  dynamicRequire('config/routes')(app);
   logger.info(`Application started on: ${await app.getUrl()}`);
 })();
