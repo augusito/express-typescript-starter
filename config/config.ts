@@ -5,10 +5,12 @@ import { HttpModule } from '../src/core/http/http.module';
 import { UserModule } from '../src/user/user.module';
 import { AutoloadModule } from '../src/core/autoload/autoload.module';
 import { AppModule } from 'src/app/app.module';
+import { EventEmitterModule } from 'src/core/event-emitter/event-emitter.module';
 
 const aggregator = new ConfigAggregator([
   HttpModule.register(),
   ApplicationModule.register(),
+  EventEmitterModule.register(),
   AppModule.register(),
   UserModule.register(),
   AutoloadModule.register(
