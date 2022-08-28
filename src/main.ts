@@ -8,6 +8,7 @@ import { dynamicRequire } from './core/utils/dynamic-require';
   const app = container.get<Application>(Application.name);
   await app.listen(3000);
 
+  dynamicRequire('config/middleware')(app);
   dynamicRequire('config/routes')(app);
   logger.info(`Application is running on: ${await app.getUrl()}`);
 })();

@@ -1,8 +1,7 @@
-import { CorsOptions, CorsOptionsDelegate } from 'cors';
 import { platform } from 'os';
 import { HttpAdapter } from '../http';
 import { LogFactory } from '../logging';
-import { isFunction, isObject, isString } from '../utils/lang.util';
+import { isFunction, isString } from '../utils/lang.util';
 import { ApplicationOptions } from './interfaces';
 import { MiddlewareFactory } from './middleware-factory';
 
@@ -25,18 +24,24 @@ export class Application {
       return this;
     }
 
-    this.applyOptions();
-
-    const useBodyParser = this.options && this.options.bodyParser !== false;
-    useBodyParser && this.registerParserMiddleware();
-
     this.isInitialized = true;
     this.logger.info('Application successfully started');
     return this;
   }
 
-  public get(path: any, handler: any) {
-    return this.httpAdapter.get(path, this.bindHandler(handler));
+  public use(...args: [any, any?]): this {
+    this.httpAdapter.use(this.bindHandler(...args));
+    return this;
+  }
+
+  public get(path: any, ...args: [any, any?]) {
+    this.httpAdapter.get(path, this.bindHandler(...args));
+    return this;
+  }
+
+  public post(path: any, ...args: [any, any?]) {
+    this.httpAdapter.post(path, this.bindHandler(...args));
+    return this;
   }
 
   public async close(): Promise<void> {
@@ -45,23 +50,6 @@ export class Application {
 
   protected async dispose(): Promise<void> {
     this.httpAdapter && (await this.httpAdapter.close());
-  }
-
-  public applyOptions() {
-    if (!this.options || !this.options.cors) {
-      return undefined;
-    }
-
-    const passCustomOptions =
-      isObject(this.options.cors) || isFunction(this.options.cors);
-
-    if (!passCustomOptions) {
-      return this.enableCors();
-    }
-
-    return this.enableCors(
-      this.options.cors as CorsOptions | CorsOptionsDelegate<any>,
-    );
   }
 
   public getHttpAdapter(): HttpAdapter {
@@ -81,17 +69,6 @@ export class Application {
     return this.httpAdapter.getHttpServer() as T;
   }
 
-  public enableCors(options?: CorsOptions | CorsOptionsDelegate<any>): void {
-    this.httpAdapter.enableCors(options);
-  }
-
-  public registerParserMiddleware() {
-    const rawBody = !!this.options?.rawBody;
-    this.httpAdapter.registerParserMiddleware(rawBody);
-  }
-
-  public async listen(port: number | string): Promise<any>;
-  public async listen(port: number | string, hostname: string): Promise<any>;
   public async listen(port: number | string, ...args: any[]): Promise<any> {
     !this.isInitialized && (await this.init());
 
@@ -178,8 +155,8 @@ export class Application {
     return this.options && this.options.httpsOptions ? 'https' : 'http';
   }
 
-  private bindHandler(handler: any) {
-    let middleware = this.factory.prepare(handler);
+  private bindHandler(...args: any) {
+    let middleware = this.factory.prepare(args);
     if (!Array.isArray(middleware)) {
       middleware = [middleware];
     }

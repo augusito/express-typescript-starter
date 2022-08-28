@@ -1,16 +1,6 @@
-import {
-  json as bodyParserJson,
-  OptionsJson,
-  OptionsUrlencoded,
-  urlencoded as bodyParserUrlencoded,
-} from 'body-parser';
-import * as cors from 'cors';
 import * as express from 'express';
 import * as http from 'http';
 import * as https from 'https';
-import { isFunction } from '../utils/lang.util';
-import { RequestHandler } from './interfaces';
-import { getBodyParserOptions } from './utils';
 
 export class HttpAdapter {
   protected httpServer: any;
@@ -21,50 +11,34 @@ export class HttpAdapter {
     return this.instance.use(...args);
   }
 
-  public get(handler: RequestHandler[] | RequestHandler);
-  public get(path: any, handler: RequestHandler[] | RequestHandler);
   public get(...args: any[]) {
     return this.instance.get(...args);
   }
 
-  public post(handler: RequestHandler[] | RequestHandler);
-  public post(path: any, handler: RequestHandler[] | RequestHandler);
   public post(...args: any[]) {
     return this.instance.post(...args);
   }
 
-  public head(handler: RequestHandler[] | RequestHandler);
-  public head(path: any, handler: RequestHandler[] | RequestHandler);
   public head(...args: any[]) {
     return this.instance.head(...args);
   }
 
-  public delete(handler: RequestHandler[] | RequestHandler);
-  public delete(path: any, handler: RequestHandler[] | RequestHandler);
   public delete(...args: any[]) {
     return this.instance.delete(...args);
   }
 
-  public put(handler: RequestHandler[] | RequestHandler);
-  public put(path: any, handler: RequestHandler[] | RequestHandler);
   public put(...args: any[]) {
     return this.instance.put(...args);
   }
 
-  public patch(handler: RequestHandler[] | RequestHandler);
-  public patch(path: any, handler: RequestHandler[] | RequestHandler);
   public patch(...args: any[]) {
     return this.instance.patch(...args);
   }
 
-  public all(handler: RequestHandler[] | RequestHandler);
-  public all(path: any, handler: RequestHandler[] | RequestHandler);
   public all(...args: any[]) {
     return this.instance.all(...args);
   }
 
-  public options(handler: RequestHandler[] | RequestHandler);
-  public options(path: any, handler: RequestHandler[] | RequestHandler);
   public options(...args: any[]) {
     return this.instance.options(...args);
   }
@@ -85,11 +59,11 @@ export class HttpAdapter {
     return response.redirect(statusCode, url);
   }
 
-  public setErrorHandler(handler: Function, prefix?: string) {
+  public setErrorHandler(handler: Function) {
     return this.use(handler);
   }
 
-  public setNotFoundHandler(handler: Function, prefix?: string) {
+  public setNotFoundHandler(handler: Function) {
     return this.use(handler);
   }
 
@@ -157,10 +131,6 @@ export class HttpAdapter {
     return request.originalUrl;
   }
 
-  public enableCors(options: cors.CorsOptions | cors.CorsOptionsDelegate<any>) {
-    return this.use(cors(options));
-  }
-
   public getHttpServer(): any {
     return this.httpServer as any;
   }
@@ -177,8 +147,6 @@ export class HttpAdapter {
     return this.instance as T;
   }
 
-  public listen(port: string | number, callback?: () => void);
-  public listen(port: string | number, hostname: string, callback?: () => void);
   public listen(port: any, ...args: any[]) {
     return this.httpServer.listen(port, ...args);
   }
@@ -200,33 +168,5 @@ export class HttpAdapter {
       return;
     }
     this.httpServer = http.createServer(this.getInstance());
-  }
-
-  public registerParserMiddleware(rawBody?: boolean) {
-    const bodyParserJsonOptions = getBodyParserOptions<OptionsJson>(rawBody);
-    const bodyParserUrlencodedOptions = getBodyParserOptions<OptionsUrlencoded>(
-      rawBody,
-      { extended: true },
-    );
-
-    const parserMiddleware = {
-      jsonParser: bodyParserJson(bodyParserJsonOptions),
-      urlencodedParser: bodyParserUrlencoded(bodyParserUrlencodedOptions),
-    };
-    Object.keys(parserMiddleware)
-      .filter((parser) => !this.isMiddlewareApplied(parser))
-      .forEach((parserKey) => this.use(parserMiddleware[parserKey]));
-  }
-
-  private isMiddlewareApplied(name: string): boolean {
-    const app = this.getInstance();
-    return (
-      !!app._router &&
-      !!app._router.stack &&
-      isFunction(app._router.stack.filter) &&
-      app._router.stack.some(
-        (layer: any) => layer && layer.handle && layer.handle.name === name,
-      )
-    );
   }
 }
