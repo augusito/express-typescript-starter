@@ -9,5 +9,5 @@ import { dynamicRequire } from './core/utils/dynamic-require';
   await app.listen(3000);
 
   dynamicRequire('config/routes')(app);
-  logger.info(`Application started on: ${await app.getUrl()}`);
+  logger.info(`Application is running on: ${await app.getUrl()}`);
 })();
