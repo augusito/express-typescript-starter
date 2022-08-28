@@ -14,12 +14,7 @@ const bodyParserUrlencodedOptions = getBodyParserOptions<OptionsUrlencoded>(
   { extended: true },
 );
 
-const corsOptions: cors.CorsOptions | cors.CorsOptionsDelegate<any> = {
-  origin: false,
-  methods: ['POST'],
-  credentials: true,
-  maxAge: 3600,
-};
+const corsOptions: cors.CorsOptions | cors.CorsOptionsDelegate<any> = {};
 
 export default (app: Application) => {
   app.use(bodyParserJson(bodyParserJsonOptions));
