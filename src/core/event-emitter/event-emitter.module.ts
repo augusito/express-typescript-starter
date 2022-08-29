@@ -1,4 +1,5 @@
 import { EventEmitter } from './event-emitter';
+import { EventSubscriber } from './event-subscriber';
 
 export class EventEmitterModule {
   static register() {
@@ -8,7 +9,12 @@ export class EventEmitterModule {
           provide: EventEmitter.name,
           useClass: EventEmitter,
         },
+        {
+          provide: EventSubscriber.name,
+          useClass: EventSubscriber,
+        },
       ],
+      hooks: [EventSubscriber.name],
     };
   }
 }
