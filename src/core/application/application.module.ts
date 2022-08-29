@@ -1,6 +1,8 @@
 import { IContainer } from '../container';
 import { HttpAdapter } from '../http';
 import { Application } from './application';
+import { HookContainer } from './hook-container';
+import { HookFactory } from './hook-factory';
 import { MiddlewareContainer } from './middleware-container';
 import { MiddlewareFactory } from './middleware-factory';
 
@@ -23,6 +25,22 @@ export class ApplicationModule {
           },
         },
         {
+          provide: HookContainer.name,
+          useFactory: (container: IContainer) => {
+            return new HookContainer(container);
+          },
+        },
+        {
+          provide: HookFactory.name,
+          useFactory: (container: IContainer) => {
+            const config: any = container.get('config') ?? {};
+            return new HookFactory(
+              container.get(HookContainer.name),
+              config?.hooks,
+            );
+          },
+        },
+        {
           provide: Application.name,
           useFactory: (container: IContainer) => {
             const config: any = container.get('config') ?? {};
@@ -30,6 +48,7 @@ export class ApplicationModule {
             return new Application(
               container.get(HttpAdapter.name),
               container.get(MiddlewareFactory.name),
+              container.get(HookFactory.name),
               appOptions,
             );
           },

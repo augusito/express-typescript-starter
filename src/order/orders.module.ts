@@ -1,3 +1,4 @@
+import { Application } from 'src/core/application';
 import { IContainer } from '../core/container';
 import { EventEmitter } from '../core/event-emitter/event-emitter';
 import { OrderCreatedListener } from './listeners/order-created.listener';
@@ -10,10 +11,6 @@ export class OrdersModule {
     return {
       providers: [
         {
-          provide: OrderCreatedListener.name,
-          useClass: OrderCreatedListener,
-        },
-        {
           provide: OrderService.name,
           useFactory: (container: IContainer) => {
             return new OrderService(container.get(EventEmitter.name));
@@ -25,6 +22,12 @@ export class OrdersModule {
             return new OrderCreateHandler(container.get(OrderService.name));
           },
         },
+        {
+          provide: OrderCreatedListener.name,
+          useFactory: (container: IContainer) => {
+            return new OrderCreatedListener();
+          },
+        },
       ],
       events: [
         {
@@ -33,5 +36,9 @@ export class OrdersModule {
         },
       ],
     };
+  }
+
+  static registerRoutes(app: Application) {
+    app.post('/orders', OrderCreateHandler.name);
   }
 }

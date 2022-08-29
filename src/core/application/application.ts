@@ -2,6 +2,7 @@ import { platform } from 'os';
 import { HttpAdapter } from '../http';
 import { LogFactory } from '../logging';
 import { isFunction, isString } from '../utils/lang.util';
+import { HookFactory } from './hook-factory';
 import { ApplicationOptions } from './interfaces';
 import { MiddlewareFactory } from './middleware-factory';
 
@@ -14,6 +15,7 @@ export class Application {
   constructor(
     private readonly httpAdapter: HttpAdapter,
     private readonly factory: MiddlewareFactory,
+    private readonly hook: HookFactory,
     private readonly options: ApplicationOptions = {},
   ) {
     this.registerHttpServer();
@@ -23,7 +25,7 @@ export class Application {
     if (this.isInitialized) {
       return this;
     }
-
+    await this.hook.callBootstrapHook();
     this.isInitialized = true;
     this.logger.info('Application successfully started');
     return this;
