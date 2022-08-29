@@ -19,7 +19,7 @@ export class OrderService {
 
   constructor(private eventEmitter: EventEmitter) {}
 
-  create(createOrderDto: CreateOrderDto) {
+  async create(createOrderDto: CreateOrderDto): Promise<number> {
     const order = {
       id: this.orders.length + 1,
       ...createOrderDto,
@@ -31,6 +31,6 @@ export class OrderService {
     orderCreatedEvent.description = order.description;
     this.eventEmitter.emit('order.created', orderCreatedEvent);
 
-    return order;
+    return order.id;
   }
 }

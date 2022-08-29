@@ -1,4 +1,3 @@
-import { isType } from '../container/utils';
 import { LogFactory } from '../logging';
 import { isString } from '../utils/lang.util';
 import { HookContainer } from './hook-container';

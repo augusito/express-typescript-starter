@@ -1,12 +1,12 @@
+import { Request, Response } from 'express';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderService } from './order.service';
 
 export class OrderCreateHandler {
-  constructor(private ordersService: OrderService) {}
+  constructor(private orderService: OrderService) {}
 
-  handle(req: any, res: any) {
-    const { name, description }: CreateOrderDto = req.body;
-    const order = this.ordersService.create({ name, description });
-    return res.status(200).json(order);
+  async handle(req: Request, res: Response) {
+    const orderId = await this.orderService.create(req.body as CreateOrderDto);
+    return res.status(200).json({ id: orderId });
   }
 }
