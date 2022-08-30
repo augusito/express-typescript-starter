@@ -6,7 +6,7 @@ import { dynamicRequire } from './core/utils/dynamic-require';
 (async () => {
   const logger = LogFactory.getLog(Application.name);
   const app = container.get<Application>(Application.name);
-  await app.listen(3008);
+  await app.listen(3000);
 
   dynamicRequire('config/middleware')(app);
   dynamicRequire('config/routes')(app);

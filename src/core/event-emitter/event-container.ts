@@ -1,6 +1,5 @@
 import { IContainer, ProviderToken, Type } from '../container';
 import { isType } from '../container/utils';
-import { LogFactory } from '../logging';
 
 export class EventContainer implements IContainer {
   constructor(private readonly container: IContainer) {}

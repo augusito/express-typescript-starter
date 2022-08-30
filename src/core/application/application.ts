@@ -2,7 +2,7 @@ import { platform } from 'os';
 import { HttpAdapter } from '../http';
 import { LogFactory } from '../logging';
 import { isFunction, isString } from '../utils/lang.util';
-import { HookFactory } from './hook-factory';
+import { HookCollector } from './hooks/hook-collector';
 import { ApplicationOptions } from './interfaces';
 import { MiddlewareFactory } from './middleware-factory';
 
@@ -15,7 +15,7 @@ export class Application {
   constructor(
     private readonly httpAdapter: HttpAdapter,
     private readonly factory: MiddlewareFactory,
-    private readonly hook: HookFactory,
+    private readonly hookCollector: HookCollector,
     private readonly options: ApplicationOptions = {},
   ) {
     this.registerHttpServer();
@@ -25,7 +25,7 @@ export class Application {
     if (this.isInitialized) {
       return this;
     }
-    await this.hook.callBootstrapHook();
+    await this.hookCollector.callBootstrapHook();
     this.isInitialized = true;
     this.logger.info('Application successfully started');
     return this;
@@ -48,6 +48,7 @@ export class Application {
 
   public async close(): Promise<void> {
     await this.dispose();
+    await this.hookCollector.callShutdownHook();
   }
 
   protected async dispose(): Promise<void> {
