@@ -6,7 +6,7 @@ import { OrderCreateHandler } from './order-create.handler';
 
 import { OrderService } from './order.service';
 
-export class OrdersModule {
+export class OrderModule {
   static register() {
     return {
       providers: [
