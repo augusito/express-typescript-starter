@@ -1,6 +1,7 @@
-import { isFunction, isNil } from '../../utils/lang.util';
+import { isNil } from '../../utils/lang.util';
 import { HookFactory } from './hook-factory';
 import { OnApplicationBootstrap, OnApplicationShutdown } from '../interfaces';
+import { hasOnAppBootstrapHook, hasOnAppShutdownHook } from './utils';
 
 export class HookCollector {
   private readonly instances: [];
@@ -22,7 +23,7 @@ export class HookCollector {
   callBootstrapOperator(instances: any[]): Promise<any>[] {
     return instances
       .filter((instance: any) => !isNil(instance))
-      .filter(this.hasOnAppBootstrapHook)
+      .filter(hasOnAppBootstrapHook)
       .map(async (instance) =>
         (instance as any as OnApplicationBootstrap).onApplicationBootstrap(),
       );
@@ -31,23 +32,11 @@ export class HookCollector {
   callShutdownOperator(instances: any[], signal?: string): Promise<any>[] {
     return instances
       .filter((instance: any) => !isNil(instance))
-      .filter(this.hasOnAppShutdownHook)
+      .filter(hasOnAppShutdownHook)
       .map(async (instance) =>
         (instance as any as OnApplicationShutdown).onApplicationShutdown(
           signal,
         ),
       );
-  }
-
-  hasOnAppBootstrapHook(instance: unknown): instance is OnApplicationBootstrap {
-    return isFunction(
-      (instance as OnApplicationBootstrap).onApplicationBootstrap,
-    );
-  }
-
-  hasOnAppShutdownHook(instance: unknown): instance is OnApplicationShutdown {
-    return isFunction(
-      (instance as OnApplicationShutdown).onApplicationShutdown,
-    );
   }
 }
