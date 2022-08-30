@@ -1,5 +1,6 @@
 import { platform } from 'os';
-import { HttpAdapter } from '../http';
+import { iterate } from 'iterare';
+import { HttpAdapter, ShutdownSignal } from '../http';
 import { LogFactory } from '../logging';
 import { isFunction, isString } from '../utils/lang.util';
 import { HookCollector } from './hooks/hook-collector';
@@ -8,6 +9,8 @@ import { MiddlewareFactory } from './middleware-factory';
 
 export class Application {
   private readonly logger = LogFactory.getLog(Application.name);
+  private readonly activeShutdownSignals = new Array<string>();
+  private shutdownCleanupRef?: (...args: unknown[]) => unknown;
   private isInitialized = false;
   private isListening = false;
   private httpServer: any;
@@ -49,6 +52,7 @@ export class Application {
   public async close(): Promise<void> {
     await this.dispose();
     await this.hookCollector.callShutdownHook();
+    this.unsubscribeFromProcessSignals();
   }
 
   protected async dispose(): Promise<void> {
@@ -70,6 +74,27 @@ export class Application {
   public createServer<T = any>(): T {
     this.httpAdapter.initHttpServer(this.options);
     return this.httpAdapter.getHttpServer() as T;
+  }
+
+  public enableShutdownHooks(signals: (ShutdownSignal | string)[] = []): this {
+    if (signals.length === 0) {
+      signals = Object.keys(ShutdownSignal).map(
+        (key: string) => ShutdownSignal[key],
+      );
+    } else {
+      // given signals array should be unique because
+      // process shouldn't listen to the same signal more than once.
+      signals = Array.from(new Set(signals));
+    }
+
+    signals = iterate(signals)
+      .map((signal: string) => signal.toString().toUpperCase().trim())
+      // filter out the signals which is already listening to
+      .filter((signal) => !this.activeShutdownSignals.includes(signal))
+      .toArray();
+
+    this.listenToShutdownSignals(signals);
+    return this;
   }
 
   public async listen(port: number | string, ...args: any[]): Promise<any> {
@@ -165,5 +190,40 @@ export class Application {
     }
 
     return middleware.map((mid: any) => mid.process.bind(mid));
+  }
+
+  private listenToShutdownSignals(signals: string[]) {
+    const cleanup = async (signal: string) => {
+      try {
+        signals.forEach((sig) => process.removeListener(sig, cleanup));
+        await this.dispose();
+        await this.hookCollector.callShutdownHook(signal);
+        process.kill(process.pid, signal);
+      } catch (err) {
+        this.logger.error(
+          'Error happened during shutdown',
+          (err as Error)?.stack,
+          Application.name,
+        );
+        process.exit(1);
+      }
+    };
+
+    this.shutdownCleanupRef = cleanup as (...args: unknown[]) => unknown;
+
+    signals.forEach((signal: string) => {
+      this.activeShutdownSignals.push(signal);
+      process.on(signal as any, cleanup);
+    });
+  }
+
+  private unsubscribeFromProcessSignals() {
+    if (!this.shutdownCleanupRef) {
+      return;
+    }
+
+    this.activeShutdownSignals.forEach((signal) => {
+      process.removeListener(signal, this.shutdownCleanupRef);
+    });
   }
 }
