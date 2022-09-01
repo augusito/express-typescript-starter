@@ -1,4 +1,4 @@
-import { isFunction } from 'src/core/utils/lang.util';
+import { isFunction } from '../../utils/lang.util';
 import { OnApplicationBootstrap, OnApplicationShutdown } from '../interfaces';
 
 export function hasOnAppBootstrapHook(
