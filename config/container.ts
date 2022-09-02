@@ -1,5 +1,5 @@
-import { Container } from '../src/core/container';
-import { omit } from '../src/core/utils/object.util';
+import { Container } from '../lib/container';
+import { omit } from '../lib/utils/object.util';
 import { config } from './config';
 
 const container = new Container(config?.providers);

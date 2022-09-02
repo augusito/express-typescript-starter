@@ -1,5 +1,5 @@
-import { Application } from '../core/application';
-import { IContainer } from '../core/container';
+import { Application } from '../../lib/application';
+import { IContainer } from '../../lib/container';
 import { UserHandler } from './user.handler';
 import { UserService } from './user.service';
 

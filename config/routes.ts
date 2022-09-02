@@ -1,5 +1,5 @@
 import { AppModule } from '../src/app/app.module';
-import { Application } from '../src/core/application';
+import { Application } from '../lib/application';
 import { OrderModule } from '../src/order/order.module';
 import { UserModule } from '../src/user/user.module';
 

@@ -1,6 +1,6 @@
 import { container } from '../config/container';
-import { Application } from './core/application';
-import { LogFactory } from './core/logging';
+import { Application } from '../lib/application';
+import { LogFactory } from '../lib/logging';
 
 (async () => {
   const logger = LogFactory.getLog(Application.name);

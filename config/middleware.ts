@@ -5,8 +5,8 @@ import {
   urlencoded as bodyParserUrlencoded,
 } from 'body-parser';
 import * as cors from 'cors';
-import { getBodyParserOptions } from '../src/core/http/utils';
-import { Application } from '../src/core/application';
+import { getBodyParserOptions } from '../lib/http/utils';
+import { Application } from '../lib/application';
 
 const bodyParserJsonOptions = getBodyParserOptions<OptionsJson>(true);
 const bodyParserUrlencodedOptions = getBodyParserOptions<OptionsUrlencoded>(

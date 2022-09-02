@@ -1,6 +1,6 @@
-import { Application } from '../core/application';
-import { IContainer } from '../core/container';
-import { EventEmitter } from '../core/event-emitter/event-emitter';
+import { Application } from '../../lib/application';
+import { IContainer } from '../../lib/container';
+import { EventEmitter } from '../../lib/event-emitter/event-emitter';
 import { OrderCreatedListener } from './listeners/order-created.listener';
 import { OrderCreateHandler } from './order-create.handler';
 

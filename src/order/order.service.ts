@@ -1,7 +1,7 @@
 import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderCreatedEvent } from './events/order-created.event';
-import { EventEmitter } from '../core/event-emitter/event-emitter';
+import { EventEmitter } from '../../lib/event-emitter/event-emitter';
 
 export class OrderService {
   public orders: Order[] = [
