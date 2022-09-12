@@ -1,12 +1,15 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
   "testRegex": "(.|-)test\\.(js|ts)$",
-  "rootDir": "src",
+  "rootDir": ".",
   "verbose": true,
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "collectCoverageFrom": ["**/*.(t|j)s"],
   "coverageDirectory": "../coverage",
+  "coveragePathIgnorePatterns": ["/node_modules/"],
+  "testPathIgnorePatterns": ["/node_modules/", "/dist/"],
+  "modulePathIgnorePatterns": ["<rootDir>/dist/"],
   "testEnvironment": "node"
 }
