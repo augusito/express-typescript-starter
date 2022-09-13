@@ -59,6 +59,7 @@ describe('Cron', () => {
     const job = registry.getCronJob('EVERY_SECOND');
     expect(job).toBeDefined();
     expect(job.running).toBeUndefined();
+    expect(callsCount).toEqual(0);
 
     tock.useFakeTime(Date.now());
     job.start();
@@ -86,7 +87,7 @@ describe('Cron', () => {
     }
   });
 
-  it('should throw when duplicate detected', () => {
+  it('should throw when duplicate cron job', () => {
     const newJob = new CronJob('* * * * * *', () => {});
 
     registry.addCronJob('EVERY_SECOND', newJob);
@@ -109,5 +110,88 @@ describe('Cron', () => {
 
   it('should return false for cron job', async () => {
     expect(registry.doesExist('cron', 'EVERY_SECOND')).toEqual(false);
+  });
+});
+
+describe('Interval', () => {
+  let registry: SchedulerRegistry;
+
+  beforeEach(() => {
+    registry = new SchedulerRegistry();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it(`should add interval`, async () => {
+    const intervalRef = setInterval(() => {}, 2500);
+
+    registry.addInterval('TEST', intervalRef as unknown as number);
+    expect(registry.getInterval('TEST')).not.toBeUndefined();
+  });
+
+  it(`should return and schedule interval`, async () => {
+    let called = false;
+
+    const intervalRef = setInterval(() => {
+      called = true;
+      clearInterval(registry.getInterval('TEST'));
+    }, 2500);
+
+    registry.addInterval('TEST', intervalRef as unknown as number);
+    const intervals = registry.getIntervals();
+    expect(intervals).toContain('TEST');
+
+    const interval = registry.getInterval('TEST');
+    expect(interval).toBeDefined();
+
+    expect(called).toBeFalsy();
+    jest.runAllTimers();
+    expect(called).toBeTruthy();
+  });
+
+  it(`should remove interval`, () => {
+    const intervalRef = setInterval(() => {}, 2500);
+
+    registry.addInterval('TEST', intervalRef as unknown as number);
+    let interval = registry.getInterval('TEST');
+    expect(interval).toBeDefined();
+
+    registry.removeInterval('TEST');
+    try {
+      interval = registry.getInterval('TEST');
+    } catch (e) {
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(e.message).toEqual(
+        'No Interval was found with the given name (TEST).',
+      );
+    }
+  });
+
+  it('should throw when duplicate interval', () => {
+    const intervalRef = setInterval(() => {}, 2500);
+
+    registry.addInterval('TEST', intervalRef as unknown as number);
+    try {
+      registry.addInterval('TEST', intervalRef as unknown as number);
+    } catch (e) {
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(e.message).toEqual(
+        'Interval with the given name (TEST) already exists. Ignored.',
+      );
+    }
+  });
+
+  it('should return true for interval', async () => {
+    const intervalRef = setInterval(() => {}, 2500);
+
+    registry.addInterval('TEST', intervalRef as unknown as number);
+    expect(registry.doesExist('interval', 'TEST')).toEqual(true);
+  });
+
+  it('should return false for interval', async () => {
+    expect(registry.doesExist('interval', 'TEST')).toEqual(false);
   });
 });
