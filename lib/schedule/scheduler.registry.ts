@@ -71,7 +71,7 @@ export class SchedulerRegistry {
     return this.cronJobs;
   }
 
-  deleteCronJob(name: string) {
+  removeCronJob(name: string) {
     const cronJob = this.getCronJob(name);
     cronJob.stop();
     this.cronJobs.delete(name);
@@ -81,7 +81,7 @@ export class SchedulerRegistry {
     return [...this.intervals.keys()];
   }
 
-  deleteInterval(name: string) {
+  removeInterval(name: string) {
     const interval = this.getInterval(name);
     clearInterval(interval);
     this.intervals.delete(name);
@@ -91,7 +91,7 @@ export class SchedulerRegistry {
     return [...this.timeouts.keys()];
   }
 
-  deleteTimeout(name: string) {
+  removeTimeout(name: string) {
     const timeout = this.getTimeout(name);
     clearTimeout(timeout);
     this.timeouts.delete(name);
