@@ -28,33 +28,63 @@ const tock = (() => {
 
 describe('SchedulerRegistry', () => {
   describe('Cron', () => {
-    afterEach(tock.useRealTime);
-    it(`should return and start dynamic cron job`, async () => {
-      let dynamicCallsCount = 0;
-      const registry = new SchedulerRegistry();
+    let registry: SchedulerRegistry;
 
-      const job = new CronJob('* * * * * *', () => {
-        ++dynamicCallsCount;
-        if (dynamicCallsCount > 2) {
-          const ref = registry.getCronJob('dynamic');
+    beforeEach(() => {
+      registry = new SchedulerRegistry();
+    });
+
+    afterEach(tock.useRealTime);
+
+    it(`should add cron job`, () => {
+      const newJob = new CronJob('* * * * * *', () => {});
+
+      registry.addCronJob('EVERY_SECOND', newJob);
+      expect(registry.getCronJob('EVERY_SECOND')).not.toBeUndefined();
+    });
+
+    it(`should return and start cron job`, () => {
+      let callsCount = 0;
+      const newJob = new CronJob('* * * * * *', () => {
+        ++callsCount;
+        if (callsCount > 2) {
+          const ref = registry.getCronJob('EVERY_SECOND');
           ref?.stop();
         }
       });
 
-      registry.addCronJob('dynamic', job);
+      registry.addCronJob('EVERY_SECOND', newJob);
       const jobs = registry.getCronJobs();
-      expect(jobs.get('dynamic')).toEqual(job);
+      expect(jobs.get('EVERY_SECOND')).toEqual(newJob);
 
-      const dynamicJob = registry.getCronJob('dynamic');
-      expect(dynamicJob).toBeDefined();
-      expect(dynamicJob.running).toBeUndefined();
+      const job = registry.getCronJob('EVERY_SECOND');
+      expect(job).toBeDefined();
+      expect(job.running).toBeUndefined();
 
       tock.useFakeTime(Date.now());
-      dynamicJob.start();
-      expect(dynamicJob.running).toEqual(true);
+      job.start();
+      expect(job.running).toEqual(true);
 
       tock.advanceTime(3000);
-      expect(dynamicCallsCount).toEqual(3);
+      expect(callsCount).toEqual(3);
+    });
+
+    it(`should remove cron job`, () => {
+      const newJob = new CronJob('* * * * * *', () => {});
+
+      registry.addCronJob('EVERY_SECOND', newJob);
+      let job = registry.getCronJob('EVERY_SECOND');
+      expect(job).toBeDefined();
+
+      registry.removeCronJob('EVERY_SECOND');
+      try {
+        job = registry.getCronJob('EVERY_SECOND');
+      } catch (e) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(e.message).toEqual(
+          'No Cron Job was found with the given name (EVERY_SECOND).',
+        );
+      }
     });
   });
 });
