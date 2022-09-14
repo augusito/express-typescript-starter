@@ -18,10 +18,10 @@ export class SchedulerOrchestrator
     private readonly ScheduleFactory: ScheduleFactory,
     schedules: any = [],
   ) {
-    this.initialize(schedules);
+    this.init(schedules);
   }
 
-  initialize(schedules: any[]) {
+  init(schedules: any[]) {
     schedules.forEach((schedule: any) => {
       const { type, options, callback } = schedule;
       switch (type) {
