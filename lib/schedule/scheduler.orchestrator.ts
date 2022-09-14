@@ -12,6 +12,7 @@ export class SchedulerOrchestrator
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
   private readonly cronJobs: Record<string, any> = {};
+  private readonly intervals: Record<string, any> = {};
   private readonly timeouts: Record<string, any> = {};
 
   constructor(
@@ -28,15 +29,15 @@ export class SchedulerOrchestrator
       switch (type) {
         case SchedulerType.CRON: {
           const prototype = this.ScheduleFactory.prepare(callback);
-
-          this.addCron(prototype.execute.bind(prototype), options);
-          break;
+          return this.addCron(prototype.execute.bind(prototype), options);
         }
         case SchedulerType.TIMEOUT: {
           const prototype = this.ScheduleFactory.prepare(callback);
-
-          this.addTimeout(prototype.execute.bind(prototype), options);
-          break;
+          return this.addTimeout(prototype.execute.bind(prototype), options);
+        }
+        case SchedulerType.INTERVAL: {
+          const prototype = this.ScheduleFactory.prepare(callback);
+          return this.addInterval(prototype.execute.bind(prototype), options);
         }
       }
     });
@@ -44,11 +45,13 @@ export class SchedulerOrchestrator
 
   onApplicationBootstrap() {
     this.mountCron();
+    this.mountIntervals();
     this.mountTimeouts();
   }
 
   onApplicationShutdown(signal?: string) {
     this.closeCronJobs();
+    this.clearIntervals();
     this.clearTimeouts();
   }
 
@@ -74,6 +77,17 @@ export class SchedulerOrchestrator
     });
   }
 
+  mountIntervals() {
+    const intervalKeys = Object.keys(this.intervals);
+    intervalKeys.forEach((key) => {
+      const options = this.intervals[key];
+      const intervalRef = setInterval(options.target, options.timeout);
+
+      options.ref = intervalRef;
+      this.schedulerRegistry.addInterval(key, intervalRef);
+    });
+  }
+
   mountTimeouts() {
     const timeoutKeys = Object.keys(this.timeouts);
     timeoutKeys.forEach((key) => {
@@ -91,6 +105,12 @@ export class SchedulerOrchestrator
     );
   }
 
+  clearIntervals() {
+    this.schedulerRegistry
+      .getIntervals()
+      .forEach((key) => this.schedulerRegistry.removeInterval(key));
+  }
+
   clearTimeouts() {
     this.schedulerRegistry
       .getTimeouts()
@@ -102,6 +122,14 @@ export class SchedulerOrchestrator
     this.cronJobs[name] = {
       target: methodRef,
       options,
+    };
+  }
+
+  addInterval(methodRef: Function, options: { name: string; timeout: number }) {
+    const name = options.name || v4();
+    this.intervals[name] = {
+      target: methodRef,
+      timeout: options.timeout,
     };
   }
 
