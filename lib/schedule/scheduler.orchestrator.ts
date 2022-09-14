@@ -12,6 +12,7 @@ export class SchedulerOrchestrator
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
   private readonly cronJobs: Record<string, any> = {};
+  private readonly timeouts: Record<string, any> = {};
 
   constructor(
     private readonly schedulerRegistry: SchedulerRegistry,
@@ -29,6 +30,13 @@ export class SchedulerOrchestrator
           const prototype = this.ScheduleFactory.prepare(callback);
 
           this.addCron(prototype.execute.bind(prototype), options);
+          break;
+        }
+        case SchedulerType.TIMEOUT: {
+          const prototype = this.ScheduleFactory.prepare(callback);
+
+          this.addTimeout(prototype.execute.bind(prototype), options);
+          break;
         }
       }
     });
@@ -36,10 +44,12 @@ export class SchedulerOrchestrator
 
   onApplicationBootstrap() {
     this.mountCron();
+    this.mountTimeouts();
   }
 
   onApplicationShutdown(signal?: string) {
     this.closeCronJobs();
+    this.clearTimeouts();
   }
 
   mountCron() {
@@ -64,10 +74,27 @@ export class SchedulerOrchestrator
     });
   }
 
+  mountTimeouts() {
+    const timeoutKeys = Object.keys(this.timeouts);
+    timeoutKeys.forEach((key) => {
+      const options = this.timeouts[key];
+      const timeoutRef = setTimeout(options.target, options.timeout);
+
+      options.ref = timeoutRef;
+      this.schedulerRegistry.addTimeout(key, timeoutRef);
+    });
+  }
+
   closeCronJobs() {
     Array.from(this.schedulerRegistry.getCronJobs().keys()).forEach((key) =>
       this.schedulerRegistry.removeCronJob(key),
     );
+  }
+
+  clearTimeouts() {
+    this.schedulerRegistry
+      .getTimeouts()
+      .forEach((key) => this.schedulerRegistry.removeTimeout(key));
   }
 
   addCron(methodRef: Function, options: any) {
@@ -75,6 +102,14 @@ export class SchedulerOrchestrator
     this.cronJobs[name] = {
       target: methodRef,
       options,
+    };
+  }
+
+  addTimeout(methodRef: Function, options: { name: string; timeout: number }) {
+    const name = options.name || v4();
+    this.timeouts[name] = {
+      target: methodRef,
+      timeout: options.timeout,
     };
   }
 }

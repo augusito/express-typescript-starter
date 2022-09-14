@@ -243,9 +243,11 @@ describe('Cron', () => {
 
   it('should clean up cron jobs on application shutdown', () => {
     tock.useFakeTime();
+
     orchestrator.onApplicationBootstrap();
     expect(registry.getCronJobs().size).toBe(4);
     expect(tock.countTimers()).toBe(4);
+
     orchestrator.onApplicationShutdown();
     expect(registry.getCronJobs().size).toBe(0);
     expect(tock.countTimers()).toBe(0);
