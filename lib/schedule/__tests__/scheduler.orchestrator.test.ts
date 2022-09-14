@@ -28,7 +28,7 @@ class InMemoryContainer implements IContainer {
   }
 }
 
-class TaskOne {
+class CronOne {
   callsCount = 0;
   constructor(private readonly schedulerRegistry: SchedulerRegistry) {}
   execute() {
@@ -40,7 +40,7 @@ class TaskOne {
   }
 }
 
-class TaskTwo {
+class CronTwo {
   callsCount = 0;
   constructor(private readonly schedulerRegistry: SchedulerRegistry) {}
   execute() {
@@ -54,7 +54,7 @@ class TaskTwo {
   }
 }
 
-class TaskThree {
+class CronThree {
   callsCount = 0;
   constructor(private readonly schedulerRegistry: SchedulerRegistry) {}
   execute() {
@@ -66,7 +66,7 @@ class TaskThree {
   }
 }
 
-class TaskFour {
+class CronFour {
   callsCount = 0;
   constructor(private readonly schedulerRegistry: SchedulerRegistry) {}
   execute() {
@@ -85,7 +85,7 @@ const schedules = [
       cronTime: '* * * * * *',
       name: 'EXECUTES_EVERY_SECOND',
     },
-    callback: TaskOne.name,
+    callback: CronOne.name,
   },
   {
     type: SchedulerType.CRON,
@@ -93,7 +93,7 @@ const schedules = [
       cronTime: '*/30 * * * * *',
       name: 'EXECUTES_EVERY_30_SECONDS',
     },
-    callback: TaskTwo.name,
+    callback: CronTwo.name,
   },
   {
     type: SchedulerType.CRON,
@@ -101,7 +101,7 @@ const schedules = [
       cronTime: '*/1 * * * *',
       name: 'EXECUTES_EVERY_MINUTE',
     },
-    callback: TaskThree.name,
+    callback: CronThree.name,
   },
   {
     type: SchedulerType.CRON,
@@ -109,21 +109,21 @@ const schedules = [
       cronTime: '0 0-23/1 * * *',
       name: 'EXECUTES_EVERY_HOUR',
     },
-    callback: TaskFour.name,
+    callback: CronFour.name,
   },
 ];
 
 const container = new InMemoryContainer();
 container.set(SchedulerRegistry.name, new SchedulerRegistry());
-container.set(TaskOne.name, new TaskOne(container.get(SchedulerRegistry.name)));
-container.set(TaskTwo.name, new TaskTwo(container.get(SchedulerRegistry.name)));
+container.set(CronOne.name, new CronOne(container.get(SchedulerRegistry.name)));
+container.set(CronTwo.name, new CronTwo(container.get(SchedulerRegistry.name)));
 container.set(
-  TaskThree.name,
-  new TaskThree(container.get(SchedulerRegistry.name)),
+  CronThree.name,
+  new CronThree(container.get(SchedulerRegistry.name)),
 );
 container.set(
-  TaskFour.name,
-  new TaskFour(container.get(SchedulerRegistry.name)),
+  CronFour.name,
+  new CronFour(container.get(SchedulerRegistry.name)),
 );
 container.set(ScheduleContainer.name, new ScheduleContainer(container));
 container.set(
@@ -174,7 +174,7 @@ describe('Cron', () => {
   });
 
   it(`should schedule "cron"`, () => {
-    const service = container.get<TaskOne>(TaskOne.name);
+    const service = container.get<CronOne>(CronOne.name);
     expect(service.callsCount).toEqual(0);
 
     tock.useFakeTime();
@@ -190,7 +190,7 @@ describe('Cron', () => {
   });
 
   it(`should run "cron" once after 30 seconds`, () => {
-    const service = container.get<TaskTwo>(TaskTwo.name);
+    const service = container.get<CronTwo>(CronTwo.name);
 
     tock.useFakeTime();
     orchestrator.onApplicationBootstrap();
@@ -208,7 +208,7 @@ describe('Cron', () => {
   });
 
   it(`should run "cron" 3 times every 60 seconds`, () => {
-    const service = container.get<TaskThree>(TaskThree.name);
+    const service = container.get<CronThree>(CronThree.name);
 
     tock.useFakeTime();
     expect(service.callsCount).toEqual(0);
@@ -225,7 +225,7 @@ describe('Cron', () => {
   });
 
   it(`should run "cron" 3 times every hour`, () => {
-    const service = container.get<TaskFour>(TaskFour.name);
+    const service = container.get<CronFour>(CronFour.name);
 
     tock.useFakeTime();
     expect(service.callsCount).toEqual(0);
