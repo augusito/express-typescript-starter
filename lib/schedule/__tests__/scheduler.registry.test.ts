@@ -3,25 +3,16 @@ import { SchedulerRegistry } from '../scheduler.registry';
 
 describe('Cron', () => {
   const tock = (() => {
-    let spy: jest.SpyInstance<number, []> = jest.fn();
-    let mockedTime = 0;
-
     return {
-      useFakeTime(time = 0) {
-        mockedTime = time;
-        spy.mockRestore();
-        spy = jest.spyOn(Date, 'now').mockReturnValue(mockedTime);
+      useFakeTime() {
         jest.useFakeTimers();
       },
 
       advanceTime(time = 0) {
-        mockedTime = mockedTime + time;
-        spy.mockReturnValue(mockedTime);
         jest.advanceTimersByTime(time);
       },
 
       useRealTime() {
-        spy.mockRestore();
         jest.useRealTimers();
       },
     };
@@ -61,7 +52,7 @@ describe('Cron', () => {
     expect(job.running).toBeUndefined();
     expect(callsCount).toEqual(0);
 
-    tock.useFakeTime(Date.now());
+    tock.useFakeTime();
     job.start();
     expect(job.running).toEqual(true);
 
@@ -101,14 +92,14 @@ describe('Cron', () => {
     }
   });
 
-  it('should return true for cron job', async () => {
+  it('should return true for cron job', () => {
     const newJob = new CronJob('* * * * * *', () => {});
 
     registry.addCronJob('EVERY_SECOND', newJob);
     expect(registry.doesExist('cron', 'EVERY_SECOND')).toEqual(true);
   });
 
-  it('should return false for cron job', async () => {
+  it('should return false for cron job', () => {
     expect(registry.doesExist('cron', 'EVERY_SECOND')).toEqual(false);
   });
 });
@@ -125,14 +116,14 @@ describe('Interval', () => {
     jest.useRealTimers();
   });
 
-  it(`should add interval`, async () => {
+  it(`should add interval`, () => {
     const intervalRef = setInterval(() => {}, 2500);
 
     registry.addInterval('TEST', intervalRef as unknown as number);
     expect(registry.getInterval('TEST')).not.toBeUndefined();
   });
 
-  it(`should return and schedule interval`, async () => {
+  it(`should return and schedule interval`, () => {
     let called = false;
 
     const intervalRef = setInterval(() => {
@@ -184,14 +175,14 @@ describe('Interval', () => {
     }
   });
 
-  it('should return true for interval', async () => {
+  it('should return true for interval', () => {
     const intervalRef = setInterval(() => {}, 2500);
 
     registry.addInterval('TEST', intervalRef as unknown as number);
     expect(registry.doesExist('interval', 'TEST')).toEqual(true);
   });
 
-  it('should return false for interval', async () => {
+  it('should return false for interval', () => {
     expect(registry.doesExist('interval', 'TEST')).toEqual(false);
   });
 });
@@ -208,14 +199,14 @@ describe('Timeout', () => {
     jest.useRealTimers();
   });
 
-  it(`should add timeout`, async () => {
+  it(`should add timeout`, () => {
     const timeoutRef = setTimeout(() => {}, 2500);
 
     registry.addTimeout('TEST', timeoutRef as unknown as number);
     expect(registry.getTimeout('TEST')).not.toBeUndefined();
   });
 
-  it(`should return and schedule timeout`, async () => {
+  it(`should return and schedule timeout`, () => {
     let called = false;
 
     const timeoutRef = setTimeout(() => {
@@ -267,14 +258,14 @@ describe('Timeout', () => {
     }
   });
 
-  it('should return true for timeout', async () => {
+  it('should return true for timeout', () => {
     const timeoutRef = setTimeout(() => {}, 2500);
 
     registry.addTimeout('TEST', timeoutRef as unknown as number);
     expect(registry.doesExist('timeout', 'TEST')).toEqual(true);
   });
 
-  it('should return false for timeout', async () => {
+  it('should return false for timeout', () => {
     expect(registry.doesExist('timeout', 'TEST')).toEqual(false);
   });
 });

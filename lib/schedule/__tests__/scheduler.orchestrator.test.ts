@@ -184,12 +184,12 @@ describe('Cron', () => {
     expect(service.callsCount).toEqual(3);
   });
 
-  it(`should return cron job by name`, async () => {
+  it(`should return cron job by name`, () => {
     orchestrator.onApplicationBootstrap();
     expect(registry.getCronJob('EXECUTES_EVERY_SECOND')).not.toBeUndefined();
   });
 
-  it(`should run "cron" once after 30 seconds`, async () => {
+  it(`should run "cron" once after 30 seconds`, () => {
     const service = container.get<TaskTwo>(TaskTwo.name);
 
     tock.useFakeTime();
@@ -207,7 +207,7 @@ describe('Cron', () => {
     expect(job.running).toBeFalsy();
   });
 
-  it(`should run "cron" 3 times every 60 seconds`, async () => {
+  it(`should run "cron" 3 times every 60 seconds`, () => {
     const service = container.get<TaskThree>(TaskThree.name);
 
     tock.useFakeTime();
@@ -224,7 +224,7 @@ describe('Cron', () => {
     expect(job.running).toBeFalsy();
   });
 
-  it(`should run "cron" 3 times every hour`, async () => {
+  it(`should run "cron" 3 times every hour`, () => {
     const service = container.get<TaskFour>(TaskFour.name);
 
     tock.useFakeTime();
@@ -241,7 +241,7 @@ describe('Cron', () => {
     expect(job.running).toBeFalsy();
   });
 
-  it('should clean up cron jobs on application shutdown', async () => {
+  it('should clean up cron jobs on application shutdown', () => {
     tock.useFakeTime();
     orchestrator.onApplicationBootstrap();
     expect(registry.getCronJobs().size).toBe(4);
