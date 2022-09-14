@@ -1,27 +1,29 @@
 import { IContainer, ProviderToken, Type } from '../container';
-import { isType } from '../container/utils';
+import { isType, stringifyToken } from '../container/utils';
+import { INVALID_SCHEDULER, MISSING_DEPENDENCY } from './schedule.messages';
 
 export class ScheduleContainer implements IContainer {
   constructor(private readonly container: IContainer) {}
 
   get<T>(token: ProviderToken): T {
     if (!this.has(token)) {
-      throw new Error('Missing dependency schedule provider');
+      throw new Error(MISSING_DEPENDENCY(stringifyToken(token)));
     }
-    let test: any;
+
+    let instance: any;
 
     if (this.container.has(token)) {
-      test = this.container.get(token);
+      instance = this.container.get(token);
     } else {
       const tokenType = token as Type;
-      test = new tokenType();
+      instance = new tokenType();
     }
 
-    if (!test.execute) {
-      throw new Error('Invalid schedule');
+    if (!instance.execute) {
+      throw new Error(INVALID_SCHEDULER(instance));
     }
 
-    return test as T;
+    return instance as T;
   }
 
   has(token: ProviderToken): boolean {
