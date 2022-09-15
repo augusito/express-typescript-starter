@@ -1,5 +1,5 @@
 import { CronJob } from 'cron';
-import { DUPLICATE_SCHEDULER, NO_SCHEDULER_FOUND } from './schedule.messages';
+import { DUPLICATE_SCHEDULER, NO_SCHEDULER_FOUND } from './scheduler.messages';
 
 export class SchedulerRegistry {
   private readonly cronJobs = new Map<string, CronJob>();

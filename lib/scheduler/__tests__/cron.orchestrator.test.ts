@@ -1,6 +1,6 @@
 import { IContainer, ProviderToken } from '../../container';
-import { ScheduleContainer } from '../schedule-container';
-import { ScheduleFactory } from '../schedule-factory';
+import { SchedulerContainer } from '../scheduler-container';
+import { SchedulerFactory } from '../scheduler-factory';
 import { SchedulerType } from '../scheduler-type.enum';
 import { SchedulerOrchestrator } from '../scheduler.orchestrator';
 import { SchedulerRegistry } from '../scheduler.registry';
@@ -125,16 +125,16 @@ container.set(
   CronFour.name,
   new CronFour(container.get(SchedulerRegistry.name)),
 );
-container.set(ScheduleContainer.name, new ScheduleContainer(container));
+container.set(SchedulerContainer.name, new SchedulerContainer(container));
 container.set(
-  ScheduleFactory.name,
-  new ScheduleFactory(container.get(ScheduleContainer.name)),
+  SchedulerFactory.name,
+  new SchedulerFactory(container.get(SchedulerContainer.name)),
 );
 container.set(
   SchedulerOrchestrator.name,
   new SchedulerOrchestrator(
     container.get(SchedulerRegistry.name),
-    container.get(ScheduleFactory.name),
+    container.get(SchedulerFactory.name),
     schedules,
   ),
 );

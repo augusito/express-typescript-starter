@@ -1,6 +1,6 @@
 import { IContainer, ProviderToken } from '../../container';
-import { ScheduleContainer } from '../schedule-container';
-import { ScheduleFactory } from '../schedule-factory';
+import { SchedulerContainer } from '../scheduler-container';
+import { SchedulerFactory } from '../scheduler-factory';
 import { SchedulerType } from '../scheduler-type.enum';
 import { SchedulerOrchestrator } from '../scheduler.orchestrator';
 import { SchedulerRegistry } from '../scheduler.registry';
@@ -28,47 +28,42 @@ class InMemoryContainer implements IContainer {
   }
 }
 
-class IntervalOne {
+class TimeoutOne {
   called = false;
-  constructor(private readonly schedulerRegistry: SchedulerRegistry) {}
   execute() {
     this.called = true;
-    clearInterval(this.schedulerRegistry.getInterval('TEST'));
   }
 }
 
 const schedules = [
   {
-    type: SchedulerType.INTERVAL,
+    type: SchedulerType.TIMEOUT,
     options: {
       timeout: 2500,
       name: 'TEST',
     },
-    callback: IntervalOne.name,
+    callback: TimeoutOne.name,
   },
 ];
 
 const container = new InMemoryContainer();
 container.set(SchedulerRegistry.name, new SchedulerRegistry());
+container.set(TimeoutOne.name, new TimeoutOne());
+container.set(SchedulerContainer.name, new SchedulerContainer(container));
 container.set(
-  IntervalOne.name,
-  new IntervalOne(container.get(SchedulerRegistry.name)),
-);
-container.set(ScheduleContainer.name, new ScheduleContainer(container));
-container.set(
-  ScheduleFactory.name,
-  new ScheduleFactory(container.get(ScheduleContainer.name)),
+  SchedulerFactory.name,
+  new SchedulerFactory(container.get(SchedulerContainer.name)),
 );
 container.set(
   SchedulerOrchestrator.name,
   new SchedulerOrchestrator(
     container.get(SchedulerRegistry.name),
-    container.get(ScheduleFactory.name),
+    container.get(SchedulerFactory.name),
     schedules,
   ),
 );
 
-describe('Interval', () => {
+describe('Timeout', () => {
   let orchestrator: SchedulerOrchestrator;
   let registry: SchedulerRegistry;
   beforeEach(() => {
@@ -77,31 +72,31 @@ describe('Interval', () => {
     jest.useFakeTimers();
   });
   afterEach(() => {
-    Array.from(registry.getIntervals()).forEach((item) =>
-      registry.removeInterval(item),
+    Array.from(registry.getTimeouts()).forEach((item) =>
+      registry.removeTimeout(item),
     );
     jest.useRealTimers();
   });
 
-  it(`should schedule "interval"`, () => {
-    const service = container.get<IntervalOne>(IntervalOne.name);
+  it(`should schedule "timeout"`, () => {
+    const service = container.get<TimeoutOne>(TimeoutOne.name);
     orchestrator.onApplicationBootstrap();
     jest.runAllTimers();
     expect(service.called).toBeTruthy();
   });
 
-  it(`should return interval by name`, () => {
+  it(`should return timeout by name`, () => {
     orchestrator.onApplicationBootstrap();
-    expect(registry.getInterval('TEST')).not.toBeUndefined();
+    expect(registry.getTimeout('TEST')).not.toBeUndefined();
   });
 
-  it('should clean up intervals on application shutdown', () => {
+  it('should clean up timeouts on application shutdown', () => {
     orchestrator.onApplicationBootstrap();
-    expect(registry.getIntervals().length).toBe(1);
+    expect(registry.getTimeouts().length).toBe(1);
     expect(jest.getTimerCount()).toBe(1);
 
     orchestrator.onApplicationShutdown();
-    expect(registry.getIntervals().length).toBe(0);
+    expect(registry.getTimeouts().length).toBe(0);
     expect(jest.getTimerCount()).toBe(0);
   });
 });

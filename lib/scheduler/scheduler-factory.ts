@@ -1,10 +1,10 @@
 import { isType, Type } from '../container';
 import { isString } from '../utils/lang.util';
-import { ScheduleContainer } from './schedule-container';
+import { SchedulerContainer } from './scheduler-container';
 import { mapToClass } from './utils';
 
-export class ScheduleFactory {
-  constructor(private readonly container: ScheduleContainer) {}
+export class SchedulerFactory {
+  constructor(private readonly container: SchedulerContainer) {}
 
   public prepare(instance: any) {
     if (instance?.execute) {

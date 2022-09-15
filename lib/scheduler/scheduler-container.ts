@@ -1,9 +1,9 @@
 import { IContainer, ProviderToken } from '../container';
 import { isType, stringifyToken } from '../container/utils';
-import { INVALID_SCHEDULER, MISSING_DEPENDENCY } from './schedule.messages';
+import { INVALID_SCHEDULER, MISSING_DEPENDENCY } from './scheduler.messages';
 import { hasExecute, mapToClass } from './utils';
 
-export class ScheduleContainer implements IContainer {
+export class SchedulerContainer implements IContainer {
   constructor(private readonly container: IContainer) {}
 
   get<T>(token: ProviderToken): T {

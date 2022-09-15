@@ -4,7 +4,7 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '../application/interfaces';
-import { ScheduleFactory } from './schedule-factory';
+import { SchedulerFactory } from './scheduler-factory';
 import { SchedulerType } from './scheduler-type.enum';
 import { SchedulerRegistry } from './scheduler.registry';
 
@@ -17,7 +17,7 @@ export class SchedulerOrchestrator
 
   constructor(
     private readonly schedulerRegistry: SchedulerRegistry,
-    private readonly ScheduleFactory: ScheduleFactory,
+    private readonly ScheduleFactory: SchedulerFactory,
     schedules: any = [],
   ) {
     this.init(schedules);

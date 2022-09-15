@@ -1,12 +1,12 @@
 import { IContainer, Provider } from '../container';
-import { ScheduleContainer } from './schedule-container';
-import { ScheduleFactory } from './schedule-factory';
+import { SchedulerContainer } from './scheduler-container';
+import { SchedulerFactory } from './scheduler-factory';
 import { SchedulerOrchestrator } from './scheduler.orchestrator';
 import { SchedulerRegistry } from './scheduler.registry';
 
 type Hook = string | Function;
 
-export class ScheduleModule {
+export class SchedulerModule {
   static register(): { providers: Provider[]; hooks: Hook[] } {
     return {
       providers: [
@@ -20,21 +20,21 @@ export class ScheduleModule {
             const config: any = container.get('config') ?? {};
             return new SchedulerOrchestrator(
               container.get(SchedulerRegistry.name),
-              container.get(ScheduleFactory.name),
+              container.get(SchedulerFactory.name),
               config.schedules,
             );
           },
         },
         {
-          provide: ScheduleContainer.name,
+          provide: SchedulerContainer.name,
           useFactory: (container: IContainer) => {
-            return new ScheduleContainer(container);
+            return new SchedulerContainer(container);
           },
         },
         {
-          provide: ScheduleFactory.name,
+          provide: SchedulerFactory.name,
           useFactory: (container: IContainer) => {
-            return new ScheduleFactory(container.get(ScheduleContainer.name));
+            return new SchedulerFactory(container.get(SchedulerContainer.name));
           },
         },
       ],
