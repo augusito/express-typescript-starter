@@ -1,3 +1,4 @@
+import { Schedule } from '../interfaces';
 import { SchedulerContainer } from '../scheduler-container';
 import { SchedulerFactory } from '../scheduler-factory';
 import { SchedulerType } from '../scheduler-type.enum';
@@ -12,14 +13,14 @@ class TimeoutOne {
   }
 }
 
-const schedules = [
+const schedules: Schedule[] = [
   {
     type: SchedulerType.TIMEOUT,
     options: {
       timeout: 2500,
       name: 'TEST',
     },
-    callback: TimeoutOne.name,
+    target: TimeoutOne.name,
   },
 ];
 

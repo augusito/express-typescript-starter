@@ -10,11 +10,6 @@ class Bar {
   fail() {}
 }
 
-class Baz {
-  constructor(private readonly options: any) {}
-  fexecute() {}
-}
-
 function fnBaz() {}
 
 const originalContainer = new InMemoryContainer();
@@ -47,12 +42,6 @@ describe('SchedulerContainer', () => {
   it('should resolve for correct scheduler function service', () => {
     const scheduler = schedulerFactory.prepare('BAZ');
     expect(scheduler.execute).toBeDefined();
-  });
-
-  it('should throw when given invalid sheduler class', () => {
-    expect(() => schedulerFactory.prepare(Baz)).toThrowError(
-      'Invalid scheduler class (Baz); expected a defult (no-argument) constructor.',
-    );
   });
 
   it('should throw when given invalid sheduler', () => {

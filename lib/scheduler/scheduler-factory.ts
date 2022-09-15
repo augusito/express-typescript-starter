@@ -2,7 +2,7 @@ import { isType, stringifyToken, Type } from '../container';
 import { isString } from '../utils/lang.util';
 import { Scheduler } from './interfaces';
 import { SchedulerContainer } from './scheduler-container';
-import { INVALID_ClASS, INVALID_SCHEDULER } from './scheduler.messages';
+import { INVALID_SCHEDULER } from './scheduler.messages';
 import { hasExecute, isClass, mapToClass } from './utils';
 
 export class SchedulerFactory {
@@ -13,9 +13,6 @@ export class SchedulerFactory {
 
     if (isType(instance)) {
       if (isClass(instance)) {
-        if (instance.length > 0) {
-          throw new Error(INVALID_ClASS(stringifyToken(instance)));
-        }
         instanceType = new instance();
       } else {
         instanceType = this.callable(instance);

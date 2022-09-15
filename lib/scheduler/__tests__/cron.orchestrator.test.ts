@@ -1,3 +1,4 @@
+import { Schedule } from '../interfaces';
 import { SchedulerContainer } from '../scheduler-container';
 import { SchedulerFactory } from '../scheduler-factory';
 import { SchedulerType } from '../scheduler-type.enum';
@@ -55,14 +56,14 @@ class CronFour {
   }
 }
 
-const schedules = [
+const schedules: Schedule[] = [
   {
     type: SchedulerType.CRON,
     options: {
       cronTime: '* * * * * *',
       name: 'EXECUTES_EVERY_SECOND',
     },
-    callback: CronOne.name,
+    target: CronOne.name,
   },
   {
     type: SchedulerType.CRON,
@@ -70,7 +71,7 @@ const schedules = [
       cronTime: '*/30 * * * * *',
       name: 'EXECUTES_EVERY_30_SECONDS',
     },
-    callback: CronTwo.name,
+    target: CronTwo.name,
   },
   {
     type: SchedulerType.CRON,
@@ -78,7 +79,7 @@ const schedules = [
       cronTime: '*/1 * * * *',
       name: 'EXECUTES_EVERY_MINUTE',
     },
-    callback: CronThree.name,
+    target: CronThree.name,
   },
   {
     type: SchedulerType.CRON,
@@ -86,7 +87,7 @@ const schedules = [
       cronTime: '0 0-23/1 * * *',
       name: 'EXECUTES_EVERY_HOUR',
     },
-    callback: CronFour.name,
+    target: CronFour.name,
   },
 ];
 

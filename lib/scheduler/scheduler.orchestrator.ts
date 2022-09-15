@@ -4,39 +4,56 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '../application/interfaces';
+import {
+  CronOptions,
+  IntervalOptions,
+  Schedule,
+  TimeoutOptions,
+} from './interfaces';
 import { SchedulerFactory } from './scheduler-factory';
 import { SchedulerType } from './scheduler-type.enum';
 import { SchedulerRegistry } from './scheduler.registry';
 
+type TargetHost = { target: Function };
+type TimeoutHost = { timeout: number };
+type RefHost<T> = { ref?: T };
+type CronOptionsHost = {
+  options: CronOptions;
+};
+
+type Cron = TargetHost & CronOptionsHost & RefHost<CronJob>;
+type Interval = TargetHost & TimeoutHost & RefHost<number>;
+type Timeout = TargetHost & TimeoutHost & RefHost<number>;
+
 export class SchedulerOrchestrator
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
-  private readonly cronJobs: Record<string, any> = {};
-  private readonly intervals: Record<string, any> = {};
-  private readonly timeouts: Record<string, any> = {};
+  private readonly cronJobs: Record<string, Cron> = {};
+  private readonly intervals: Record<string, Interval> = {};
+  private readonly timeouts: Record<string, Timeout> = {};
 
   constructor(
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly ScheduleFactory: SchedulerFactory,
-    schedules: any = [],
+    schedules: Schedule[] = [],
   ) {
     this.init(schedules);
   }
 
-  init(schedules: any[]) {
-    schedules.forEach((schedule: any) => {
-      const { type, options, callback } = schedule;
+  init(schedules: Schedule[]) {
+    schedules.forEach((schedule: Schedule) => {
+      const { type, options, target } = schedule;
       switch (type) {
         case SchedulerType.CRON: {
-          const prototype = this.ScheduleFactory.prepare(callback);
+          const prototype = this.ScheduleFactory.prepare(target);
           return this.addCron(prototype.execute.bind(prototype), options);
         }
         case SchedulerType.TIMEOUT: {
-          const prototype = this.ScheduleFactory.prepare(callback);
+          const prototype = this.ScheduleFactory.prepare(target);
           return this.addTimeout(prototype.execute.bind(prototype), options);
         }
         case SchedulerType.INTERVAL: {
-          const prototype = this.ScheduleFactory.prepare(callback);
+          const prototype = this.ScheduleFactory.prepare(target);
           return this.addInterval(prototype.execute.bind(prototype), options);
         }
       }
@@ -49,7 +66,7 @@ export class SchedulerOrchestrator
     this.mountTimeouts();
   }
 
-  onApplicationShutdown(signal?: string) {
+  onApplicationShutdown() {
     this.closeCronJobs();
     this.clearIntervals();
     this.clearTimeouts();
@@ -117,7 +134,7 @@ export class SchedulerOrchestrator
       .forEach((key) => this.schedulerRegistry.removeTimeout(key));
   }
 
-  addCron(methodRef: Function, options: any) {
+  addCron(methodRef: Function, options: CronOptions) {
     const name = options.name || v4();
     this.cronJobs[name] = {
       target: methodRef,
@@ -125,7 +142,7 @@ export class SchedulerOrchestrator
     };
   }
 
-  addInterval(methodRef: Function, options: { name: string; timeout: number }) {
+  addInterval(methodRef: Function, options: IntervalOptions) {
     const name = options.name || v4();
     this.intervals[name] = {
       target: methodRef,
@@ -133,7 +150,7 @@ export class SchedulerOrchestrator
     };
   }
 
-  addTimeout(methodRef: Function, options: { name: string; timeout: number }) {
+  addTimeout(methodRef: Function, options: TimeoutOptions) {
     const name = options.name || v4();
     this.timeouts[name] = {
       target: methodRef,

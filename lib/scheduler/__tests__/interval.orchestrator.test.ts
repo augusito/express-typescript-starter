@@ -1,3 +1,4 @@
+import { Schedule } from '../interfaces';
 import { SchedulerContainer } from '../scheduler-container';
 import { SchedulerFactory } from '../scheduler-factory';
 import { SchedulerType } from '../scheduler-type.enum';
@@ -14,14 +15,14 @@ class IntervalOne {
   }
 }
 
-const schedules = [
+const schedules: Schedule[] = [
   {
     type: SchedulerType.INTERVAL,
     options: {
       timeout: 2500,
       name: 'TEST',
     },
-    callback: IntervalOne.name,
+    target: IntervalOne.name,
   },
 ];
 
