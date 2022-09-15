@@ -1,5 +1,6 @@
 import { IContainer, ProviderToken } from '../container';
 import { isType, stringifyToken } from '../container/utils';
+import { Scheduler } from './interfaces';
 import { INVALID_SCHEDULER, MISSING_DEPENDENCY } from './scheduler.messages';
 import { hasExecute, mapToClass } from './utils';
 
@@ -11,15 +12,15 @@ export class SchedulerContainer implements IContainer {
       throw new Error(MISSING_DEPENDENCY(stringifyToken(token)));
     }
 
-    let instance: any = this.container.get(token);
+    let instance = this.container.get(token);
 
     if (isType(instance)) {
       const metatype = mapToClass(instance);
       instance = new metatype();
     }
 
-    if (!hasExecute(instance)) {
-      throw new Error(INVALID_SCHEDULER(instance));
+    if (!hasExecute(instance as Scheduler)) {
+      throw new Error(INVALID_SCHEDULER(stringifyToken(token)));
     }
 
     return instance as T;

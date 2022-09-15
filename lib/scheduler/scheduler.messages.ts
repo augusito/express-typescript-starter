@@ -10,4 +10,4 @@ export const MISSING_DEPENDENCY = (name: string) =>
   `Cannot fetch scheduler service (${name}); service not registered, or does not resolve to a callable.`;
 
 export const INVALID_SCHEDULER = (name: string) =>
-  `Invalid scheduler service (${name}); service does not provide the 'use' method.`;
+  `Invalid scheduler service (${name}); service doesn't provide the 'execute' method.`;
