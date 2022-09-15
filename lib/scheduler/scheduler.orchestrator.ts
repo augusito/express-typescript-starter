@@ -17,11 +17,9 @@ import { SchedulerRegistry } from './scheduler.registry';
 type TargetHost = { target: Function };
 type TimeoutHost = { timeout: number };
 type RefHost<T> = { ref?: T };
-type CronOptionsHost = {
-  options: CronOptions;
-};
+type CronJobHost = { options: CronOptions };
 
-type Cron = TargetHost & CronOptionsHost & RefHost<CronJob>;
+type Cron = TargetHost & CronJobHost & RefHost<CronJob>;
 type Interval = TargetHost & TimeoutHost & RefHost<number>;
 type Timeout = TargetHost & TimeoutHost & RefHost<number>;
 
