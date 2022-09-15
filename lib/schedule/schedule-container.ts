@@ -1,6 +1,7 @@
-import { IContainer, ProviderToken, Type } from '../container';
+import { IContainer, ProviderToken } from '../container';
 import { isType, stringifyToken } from '../container/utils';
 import { INVALID_SCHEDULER, MISSING_DEPENDENCY } from './schedule.messages';
+import { hasExecute, mapToClass } from './utils';
 
 export class ScheduleContainer implements IContainer {
   constructor(private readonly container: IContainer) {}
@@ -10,16 +11,14 @@ export class ScheduleContainer implements IContainer {
       throw new Error(MISSING_DEPENDENCY(stringifyToken(token)));
     }
 
-    let instance: any;
+    let instance: any = this.container.get(token);
 
-    if (this.container.has(token)) {
-      instance = this.container.get(token);
-    } else {
-      const tokenType = token as Type;
-      instance = new tokenType();
+    if (isType(instance)) {
+      const metatype = mapToClass(instance);
+      instance = new metatype();
     }
 
-    if (!instance.execute) {
+    if (!hasExecute(instance)) {
       throw new Error(INVALID_SCHEDULER(instance));
     }
 
@@ -31,6 +30,6 @@ export class ScheduleContainer implements IContainer {
       return true;
     }
 
-    return isType(token);
+    return false;
   }
 }
