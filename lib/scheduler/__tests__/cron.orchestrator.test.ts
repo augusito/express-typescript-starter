@@ -1,10 +1,10 @@
+import { TestingContainer } from '../../testing/testing-container';
 import { Schedule } from '../interfaces';
 import { SchedulerContainer } from '../scheduler-container';
 import { SchedulerFactory } from '../scheduler-factory';
 import { SchedulerType } from '../scheduler-type.enum';
 import { SchedulerOrchestrator } from '../scheduler.orchestrator';
 import { SchedulerRegistry } from '../scheduler.registry';
-import { InMemoryContainer } from './in-memory-container';
 
 class CronOne {
   callsCount = 0;
@@ -91,7 +91,7 @@ const schedules: Schedule[] = [
   },
 ];
 
-const container = new InMemoryContainer();
+const container = new TestingContainer();
 container.set(SchedulerRegistry.name, new SchedulerRegistry());
 container.set(CronOne.name, new CronOne(container.get(SchedulerRegistry.name)));
 container.set(CronTwo.name, new CronTwo(container.get(SchedulerRegistry.name)));

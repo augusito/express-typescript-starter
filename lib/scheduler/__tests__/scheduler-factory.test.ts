@@ -1,6 +1,6 @@
+import { TestingContainer } from '../../testing/testing-container';
 import { SchedulerContainer } from '../scheduler-container';
 import { SchedulerFactory } from '../scheduler-factory';
-import { InMemoryContainer } from './in-memory-container';
 
 class Foo {
   execute() {}
@@ -12,7 +12,7 @@ class Bar {
 
 function fnBaz() {}
 
-const originalContainer = new InMemoryContainer();
+const originalContainer = new TestingContainer();
 originalContainer.set(Foo.name, new Foo());
 originalContainer.set(Bar.name, new Bar());
 originalContainer.set('BAZ', fnBaz);

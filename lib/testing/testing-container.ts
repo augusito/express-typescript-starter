@@ -1,6 +1,6 @@
-import { IContainer, ProviderToken } from '../../container';
+import { IContainer, ProviderToken } from '../container';
 
-export class InMemoryContainer implements IContainer {
+export class TestingContainer implements IContainer {
   private readonly services = new Map<ProviderToken, any>();
 
   get<T>(token: ProviderToken): T {
