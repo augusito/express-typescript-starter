@@ -1,25 +1,33 @@
-import { isType, Type } from '../container';
+import { isType, stringifyToken, Type } from '../container';
 import { isString } from '../utils/lang.util';
+import { Scheduler } from './interfaces';
 import { SchedulerContainer } from './scheduler-container';
-import { mapToClass } from './utils';
+import { INVALID_SCHEDULER } from './scheduler.messages';
+import { hasExecute, isClass, mapToClass } from './utils';
 
 export class SchedulerFactory {
   constructor(private readonly container: SchedulerContainer) {}
 
-  public prepare(instance: any) {
-    if (instance?.execute) {
-      return instance;
-    }
+  public prepare(instance: any): Scheduler {
+    let type: Scheduler;
 
     if (isType(instance)) {
-      return this.callable(instance);
+      if (isClass(instance)) {
+        type = new instance();
+      } else {
+        type = this.callable(instance);
+      }
+    }
+
+    if (hasExecute(type)) {
+      return type;
     }
 
     if (!isString(instance) || instance === '') {
-      throw new Error('Invalid schedule');
+      throw new Error(INVALID_SCHEDULER(stringifyToken(instance)));
     }
 
-    return this.lazy(instance);
+    return this.lazy(instance) as Scheduler;
   }
 
   public callable(instance: Type<any>) {
