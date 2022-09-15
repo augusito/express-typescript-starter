@@ -13,4 +13,4 @@ export const INVALID_SCHEDULER = (name: string) =>
   `Invalid scheduler service (${name}); service doesn't provide the 'execute' method.`;
 
 export const INVALID_ClASS = (name: string) =>
-  `Invalid scheduler class (${name}); expected a defult (no-argument) constructor`;
+  `Invalid scheduler class (${name}); expected a defult (no-argument) constructor.`;
