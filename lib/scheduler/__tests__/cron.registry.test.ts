@@ -1,23 +1,23 @@
 import { CronJob } from 'cron';
 import { SchedulerRegistry } from '../scheduler.registry';
 
+const tock = (() => {
+  return {
+    useFakeTime() {
+      jest.useFakeTimers();
+    },
+
+    advanceTime(time = 0) {
+      jest.advanceTimersByTime(time);
+    },
+
+    useRealTime() {
+      jest.useRealTimers();
+    },
+  };
+})();
+
 describe('Cron', () => {
-  const tock = (() => {
-    return {
-      useFakeTime() {
-        jest.useFakeTimers();
-      },
-
-      advanceTime(time = 0) {
-        jest.advanceTimersByTime(time);
-      },
-
-      useRealTime() {
-        jest.useRealTimers();
-      },
-    };
-  })();
-
   let registry: SchedulerRegistry;
 
   beforeEach(() => {
