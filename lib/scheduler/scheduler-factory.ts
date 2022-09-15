@@ -9,18 +9,18 @@ export class SchedulerFactory {
   constructor(private readonly container: SchedulerContainer) {}
 
   public prepare(instance: any): Scheduler {
-    let type: Scheduler;
+    let instanceType: Scheduler;
 
     if (isType(instance)) {
       if (isClass(instance)) {
-        type = new instance();
+        instanceType = new instance();
       } else {
-        type = this.callable(instance);
+        instanceType = this.callable(instance);
       }
     }
 
-    if (hasExecute(type)) {
-      return type;
+    if (hasExecute(instanceType)) {
+      return instanceType;
     }
 
     if (!isString(instance) || instance === '') {
