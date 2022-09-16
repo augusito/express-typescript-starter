@@ -44,11 +44,13 @@ container.set(
 describe('Timeout', () => {
   let orchestrator: SchedulerOrchestrator;
   let registry: SchedulerRegistry;
+
   beforeEach(() => {
     registry = container.get(SchedulerRegistry.name);
     orchestrator = container.get(SchedulerOrchestrator.name);
     jest.useFakeTimers();
   });
+
   afterEach(() => {
     Array.from(registry.getTimeouts()).forEach((item) =>
       registry.removeTimeout(item),

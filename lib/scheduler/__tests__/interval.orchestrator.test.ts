@@ -49,11 +49,13 @@ container.set(
 describe('Interval', () => {
   let orchestrator: SchedulerOrchestrator;
   let registry: SchedulerRegistry;
+
   beforeEach(() => {
     registry = container.get(SchedulerRegistry.name);
     orchestrator = container.get(SchedulerOrchestrator.name);
     jest.useFakeTimers();
   });
+
   afterEach(() => {
     Array.from(registry.getIntervals()).forEach((item) =>
       registry.removeInterval(item),

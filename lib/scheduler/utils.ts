@@ -23,8 +23,3 @@ export function assignToken(metatype: Type<any>, token = v4()): Type<any> {
 export function hasExecute(instance: unknown): instance is Scheduler {
   return isFunction((instance as Scheduler)?.execute);
 }
-
-export function isClass(instance: unknown): instance is Type<any> {
-  const funcAsString = instance.toString();
-  return /^class\s/.test(funcAsString);
-}

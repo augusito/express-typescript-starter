@@ -140,10 +140,12 @@ const tock = (() => {
 describe('Cron', () => {
   let orchestrator: SchedulerOrchestrator;
   let registry: SchedulerRegistry;
+
   beforeEach(() => {
     registry = container.get(SchedulerRegistry.name);
     orchestrator = container.get(SchedulerOrchestrator.name);
   });
+
   afterEach(() => {
     Array.from(registry.getCronJobs().keys()).forEach((item) =>
       registry.removeCronJob(item),

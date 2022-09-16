@@ -3,7 +3,7 @@ import { isString } from '../utils/lang.util';
 import { Scheduler } from './interfaces';
 import { SchedulerContainer } from './scheduler-container';
 import { INVALID_SCHEDULER } from './scheduler.messages';
-import { hasExecute, isClass, mapToClass } from './utils';
+import { hasExecute, mapToClass } from './utils';
 
 export class SchedulerFactory {
   constructor(private readonly container: SchedulerContainer) {}
@@ -12,7 +12,7 @@ export class SchedulerFactory {
     let instanceType: Scheduler;
 
     if (isType(instance)) {
-      if (isClass(instance)) {
+      if (this.isClass(instance)) {
         instanceType = new instance();
       } else {
         instanceType = this.callable(instance);
@@ -27,15 +27,20 @@ export class SchedulerFactory {
       throw new Error(INVALID_SCHEDULER(stringifyToken(instance)));
     }
 
-    return this.lazy(instance) as Scheduler;
+    return this.lazy(instance);
   }
 
-  public callable(instance: Type<any>) {
+  public callable(instance: Type<any>): Scheduler {
     const metatype = mapToClass(instance);
     return new metatype();
   }
 
-  public lazy(instance: string) {
-    return this.container.get(instance);
+  public lazy(instance: string): Scheduler {
+    return this.container.get<Scheduler>(instance);
+  }
+
+  private isClass(instance: unknown): instance is Type<any> {
+    const funcAsString = instance.toString();
+    return /^class\s/.test(funcAsString);
   }
 }

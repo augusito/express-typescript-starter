@@ -1,6 +1,6 @@
 import { Type } from '../../container';
-import { assignToken, isClass, mapToClass } from '../utils';
-class Scheduler {}
+import { assignToken, mapToClass } from '../utils';
+
 function fnScheduler() {}
 
 describe('mapToClass', () => {
@@ -34,15 +34,5 @@ describe('assignToken', () => {
     const token = 'token';
     assignToken(AnonymousType, token);
     expect(AnonymousType.name).toEqual(token);
-  });
-});
-
-describe('isClass', () => {
-  it('should return true when type is class', () => {
-    expect(isClass(Scheduler)).toBeTruthy();
-  });
-
-  it('should return false when type is not class', () => {
-    expect(isClass(fnScheduler)).toBeFalsy();
   });
 });
