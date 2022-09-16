@@ -1,27 +1,29 @@
-import { IContainer, ProviderToken, Type } from '../container';
-import { isType } from '../container/utils';
+import { IContainer, ProviderToken } from '../container';
+import { isType, stringifyToken } from '../container/utils';
+import { Listener } from './interfaces';
+import { INVALID_EVENT, MISSING_DEPENDENCY } from './messages';
+import { hasExecute, mapToClass } from './utils';
 
 export class EventContainer implements IContainer {
   constructor(private readonly container: IContainer) {}
 
   get<T>(token: ProviderToken): T {
     if (!this.has(token)) {
-      throw new Error('Missing dependency event provider');
-    }
-    let test: any;
-
-    if (this.container.has(token)) {
-      test = this.container.get(token);
-    } else {
-      const tokenType = token as Type;
-      test = new tokenType();
+      throw new Error(MISSING_DEPENDENCY(stringifyToken(token)));
     }
 
-    if (!test.execute) {
-      throw new Error('Invalid event');
+    let instance = this.container.get(token);
+
+    if (isType(instance)) {
+      const metatype = mapToClass(instance);
+      instance = new metatype();
     }
 
-    return test as T;
+    if (!hasExecute(instance as Listener)) {
+      throw new Error(INVALID_EVENT(stringifyToken(token)));
+    }
+
+    return instance as T;
   }
 
   has(token: ProviderToken): boolean {
@@ -29,6 +31,6 @@ export class EventContainer implements IContainer {
       return true;
     }
 
-    return isType(token);
+    return false;
   }
 }

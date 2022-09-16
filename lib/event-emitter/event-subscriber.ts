@@ -1,19 +1,18 @@
-import { EventEmitter } from 'stream';
 import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '../application/interfaces';
-import { LogFactory } from '../logging';
+import { EventEmitter } from './event-emitter';
 import { EventFactory } from './event-factory';
+import { Listener, EventAndListener } from './interfaces';
 
 export class EventSubscriber
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
-  private readonly logger = LogFactory.getLog(EventSubscriber.name);
   constructor(
     private readonly eventEmitter: EventEmitter,
     private readonly eventFactory: EventFactory,
-    private readonly events: any = [],
+    private readonly events: EventAndListener[] = [],
   ) {}
 
   onApplicationBootstrap() {
@@ -25,15 +24,15 @@ export class EventSubscriber
   }
 
   loadEventListeners() {
-    this.events.forEach((evt: any) => {
-      const { event, callback } = evt;
-      const prototype = this.eventFactory.prepare(callback);
+    this.events.forEach((evt: EventAndListener) => {
+      const { event, listener } = evt;
+      const prototype = this.eventFactory.prepare(listener);
 
       this.subscribeToEventIfListener(event, prototype);
     });
   }
 
-  subscribeToEventIfListener(event: any, prototype: any) {
-    this.eventEmitter.on(event, prototype.execute);
+  subscribeToEventIfListener(event: string | symbol, prototype: Listener) {
+    this.eventEmitter.on(event, prototype.execute.bind(prototype));
   }
 }

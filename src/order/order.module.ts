@@ -1,13 +1,14 @@
 import { Application } from '../../lib/application';
-import { IContainer } from '../../lib/container';
+import { IContainer, Provider } from '../../lib/container';
 import { EventEmitter } from '../../lib/event-emitter/event-emitter';
+import { EventAndListener } from '../../lib/event-emitter/interfaces';
 import { OrderCreatedListener } from './listeners/order-created.listener';
 import { OrderCreateHandler } from './order-create.handler';
 
 import { OrderService } from './order.service';
 
 export class OrderModule {
-  static register() {
+  static register(): { providers: Provider[]; events: EventAndListener[] } {
     return {
       providers: [
         {
@@ -32,7 +33,7 @@ export class OrderModule {
       events: [
         {
           event: 'order.created',
-          callback: OrderCreatedListener.name,
+          listener: OrderCreatedListener.name,
         },
       ],
     };
