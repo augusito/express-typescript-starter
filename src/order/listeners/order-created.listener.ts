@@ -1,4 +1,4 @@
-import { Listener } from 'lib/event-emitter/interfaces';
+import { Listener } from '../../../lib/event-emitter/interfaces';
 import { OrderCreatedEvent } from '../events/order-created.event';
 
 export class OrderCreatedListener implements Listener {
