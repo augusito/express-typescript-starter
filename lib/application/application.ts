@@ -3,12 +3,15 @@ import { iterate } from 'iterare';
 import { HttpAdapter, ShutdownSignal } from '../http';
 import { LogFactory } from '../logging';
 import { isFunction, isString } from '../utils/lang.util';
+import { ErrorResponseGenerator } from './response/error-response-generator';
 import { HookCollector } from './hooks/hook-collector';
 import { ApplicationOptions } from './interfaces';
 import { MiddlewareFactory } from './middleware-factory';
+import { MiddlewareProxy } from './middleware-proxy';
 
 export class Application {
   private readonly logger = LogFactory.getLog(Application.name);
+  private readonly middlewareProxy = new MiddlewareProxy();
   private readonly activeShutdownSignals = new Array<string>();
   private shutdownCleanupRef?: (...args: unknown[]) => unknown;
   private isInitialized = false;
@@ -28,7 +31,9 @@ export class Application {
     if (this.isInitialized) {
       return this;
     }
+
     await this.hookCollector.callBootstrapHook();
+
     this.isInitialized = true;
     this.logger.info('Application successfully started');
     return this;
@@ -189,7 +194,11 @@ export class Application {
       middleware = [middleware];
     }
 
-    return middleware.map((mid: any) => mid.process.bind(mid));
+    return middleware.map((mid: any) => {
+      const instance = mid.process.bind(mid);
+      const generator = new ErrorResponseGenerator();
+      return this.middlewareProxy.createProxy(instance, generator);
+    });
   }
 
   private listenToShutdownSignals(signals: string[]) {
