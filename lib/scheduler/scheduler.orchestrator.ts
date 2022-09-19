@@ -4,31 +4,28 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '../application/interfaces';
-import {
-  CronOptions,
-  IntervalOptions,
-  Schedule,
-  TimeoutOptions,
-} from './interfaces';
+import { CronOptions, Schedule } from './interfaces';
 import { SchedulerFactory } from './scheduler-factory';
 import { SchedulerType } from './scheduler-type.enum';
 import { SchedulerRegistry } from './scheduler.registry';
 
+type CronJobHost = {
+  options: CronOptions & Record<'cronTime', string | Date | any>;
+};
 type TargetHost = { target: Function };
 type TimeoutHost = { timeout: number };
 type RefHost<T> = { ref?: T };
-type CronJobHost = { options: CronOptions };
 
-type Cron = TargetHost & CronJobHost & RefHost<CronJob>;
-type Interval = TargetHost & TimeoutHost & RefHost<number>;
-type Timeout = TargetHost & TimeoutHost & RefHost<number>;
+type CronJobOptions = TargetHost & CronJobHost & RefHost<CronJob>;
+type IntervalOptions = TargetHost & TimeoutHost & RefHost<number>;
+type TimeoutOptions = TargetHost & TimeoutHost & RefHost<number>;
 
 export class SchedulerOrchestrator
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
-  private readonly cronJobs: Record<string, Cron> = {};
-  private readonly intervals: Record<string, Interval> = {};
-  private readonly timeouts: Record<string, Timeout> = {};
+  private readonly cronJobs: Record<string, CronJobOptions> = {};
+  private readonly intervals: Record<string, IntervalOptions> = {};
+  private readonly timeouts: Record<string, TimeoutOptions> = {};
 
   constructor(
     private readonly schedulerRegistry: SchedulerRegistry,
@@ -40,19 +37,30 @@ export class SchedulerOrchestrator
 
   init(schedules: Schedule[]) {
     schedules.forEach((schedule: Schedule) => {
-      const { type, options, target } = schedule;
+      const { type, options } = schedule;
       switch (type) {
         case SchedulerType.CRON: {
-          const prototype = this.ScheduleFactory.prepare(target);
-          return this.addCron(prototype.execute.bind(prototype), options);
+          const prototype = this.ScheduleFactory.prepare(schedule.target);
+          return this.addCron(prototype.execute.bind(prototype), {
+            ...options,
+            cronTime: schedule.cronTime,
+          });
         }
         case SchedulerType.TIMEOUT: {
-          const prototype = this.ScheduleFactory.prepare(target);
-          return this.addTimeout(prototype.execute.bind(prototype), options);
+          const prototype = this.ScheduleFactory.prepare(schedule.target);
+          return this.addTimeout(
+            prototype.execute.bind(prototype),
+            schedule.timeout,
+            options.name,
+          );
         }
         case SchedulerType.INTERVAL: {
-          const prototype = this.ScheduleFactory.prepare(target);
-          return this.addInterval(prototype.execute.bind(prototype), options);
+          const prototype = this.ScheduleFactory.prepare(schedule.target);
+          return this.addInterval(
+            prototype.execute.bind(prototype),
+            schedule.timeout,
+            options.name,
+          );
         }
       }
     });
@@ -132,7 +140,10 @@ export class SchedulerOrchestrator
       .forEach((key) => this.schedulerRegistry.removeTimeout(key));
   }
 
-  addCron(methodRef: Function, options: CronOptions) {
+  addCron(
+    methodRef: Function,
+    options: CronOptions & Record<'cronTime', string | Date | any>,
+  ) {
     const name = options.name || v4();
     this.cronJobs[name] = {
       target: methodRef,
@@ -140,19 +151,17 @@ export class SchedulerOrchestrator
     };
   }
 
-  addInterval(methodRef: Function, options: IntervalOptions) {
-    const name = options.name || v4();
+  addInterval(methodRef: Function, timeout: number, name: string = v4()) {
     this.intervals[name] = {
       target: methodRef,
-      timeout: options.timeout,
+      timeout: timeout,
     };
   }
 
-  addTimeout(methodRef: Function, options: TimeoutOptions) {
-    const name = options.name || v4();
+  addTimeout(methodRef: Function, timeout: number, name: string = v4()) {
     this.timeouts[name] = {
       target: methodRef,
-      timeout: options.timeout,
+      timeout: timeout,
     };
   }
 }

@@ -18,8 +18,8 @@ class IntervalOne {
 const schedules: Schedule[] = [
   {
     type: SchedulerType.INTERVAL,
+    timeout: 2500,
     options: {
-      timeout: 2500,
       name: 'TEST',
     },
     target: IntervalOne.name,

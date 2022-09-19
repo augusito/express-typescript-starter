@@ -16,8 +16,8 @@ class TimeoutOne {
 const schedules: Schedule[] = [
   {
     type: SchedulerType.TIMEOUT,
+    timeout: 2500,
     options: {
-      timeout: 2500,
       name: 'TEST',
     },
     target: TimeoutOne.name,

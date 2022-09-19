@@ -15,10 +15,9 @@ export class TaskModule {
       ],
       schedules: [
         {
+          cronTime: EVERY_10_SECONDS,
           type: SchedulerType.CRON,
-          options: {
-            cronTime: EVERY_10_SECONDS,
-          },
+          options: {},
           target: TaskScheduler.name,
         },
       ],

@@ -59,32 +59,32 @@ class CronFour {
 const schedules: Schedule[] = [
   {
     type: SchedulerType.CRON,
+    cronTime: '* * * * * *',
     options: {
-      cronTime: '* * * * * *',
       name: 'EXECUTES_EVERY_SECOND',
     },
     target: CronOne.name,
   },
   {
     type: SchedulerType.CRON,
+    cronTime: '*/30 * * * * *',
     options: {
-      cronTime: '*/30 * * * * *',
       name: 'EXECUTES_EVERY_30_SECONDS',
     },
     target: CronTwo.name,
   },
   {
     type: SchedulerType.CRON,
+    cronTime: '*/1 * * * *',
     options: {
-      cronTime: '*/1 * * * *',
       name: 'EXECUTES_EVERY_MINUTE',
     },
     target: CronThree.name,
   },
   {
     type: SchedulerType.CRON,
+    cronTime: '0 0-23/1 * * *',
     options: {
-      cronTime: '0 0-23/1 * * *',
       name: 'EXECUTES_EVERY_HOUR',
     },
     target: CronFour.name,
