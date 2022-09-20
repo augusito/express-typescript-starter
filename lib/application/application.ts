@@ -2,12 +2,12 @@ import { platform } from 'os';
 import { iterate } from 'iterare';
 import { LogFactory } from '../logging';
 import { isFunction, isString } from '../utils/lang.util';
+import { ApplicationOptions } from './interfaces';
 import { ErrorResponseGenerator } from './response/error-response-generator';
 import { HookCollector } from './hooks/hook-collector';
-import { ApplicationOptions } from './interfaces';
 import { HttpAdapter } from './http-adapter';
-import { MiddlewareFactory } from './middleware-factory';
-import { MiddlewareProxy } from './middleware-proxy';
+import { MiddlewareFactory } from './middleware/middleware-factory';
+import { MiddlewareProxy } from './middleware/middleware-proxy';
 import { ShutdownSignal } from './enums/shutdown-signal.enum';
 
 export class Application {

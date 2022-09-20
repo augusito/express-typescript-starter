@@ -1,4 +1,4 @@
-import { ErrorResponseGenerator } from './response/error-response-generator';
+import { ErrorResponseGenerator } from '../response/error-response-generator';
 
 export class MiddlewareProxy {
   public createProxy(

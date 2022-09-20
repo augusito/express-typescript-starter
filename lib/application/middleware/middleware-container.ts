@@ -1,6 +1,6 @@
-import { IContainer, ProviderToken, Type } from '../container';
-import { isType } from '../container/utils';
-import { RequestHandlerMiddleware } from './middleware/request-handler-middleware';
+import { IContainer, ProviderToken, Type } from '../../container';
+import { isType } from '../../container/utils';
+import { RequestHandlerMiddleware } from './request-handler-middleware';
 
 export class MiddlewareContainer implements IContainer {
   constructor(private readonly container: IContainer) {}

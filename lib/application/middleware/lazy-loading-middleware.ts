@@ -1,4 +1,4 @@
-import { MiddlewareContainer } from '../middleware-container';
+import { MiddlewareContainer } from './middleware-container';
 
 export class LazyLoadingMiddleware {
   constructor(

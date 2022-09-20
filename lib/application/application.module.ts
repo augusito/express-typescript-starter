@@ -1,11 +1,11 @@
 import { IContainer } from '../container';
 import { Application } from './application';
-import { HookFactory } from './hooks/hook-factory';
-import { HookContainer } from './hooks/hook-container';
-import { MiddlewareContainer } from './middleware-container';
-import { MiddlewareFactory } from './middleware-factory';
 import { HookCollector } from './hooks/hook-collector';
+import { HookContainer } from './hooks/hook-container';
+import { HookFactory } from './hooks/hook-factory';
 import { HttpAdapter } from './http-adapter';
+import { MiddlewareContainer } from './middleware/middleware-container';
+import { MiddlewareFactory } from './middleware/middleware-factory';
 
 export class ApplicationModule {
   static register() {

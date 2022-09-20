@@ -1,10 +1,10 @@
-import { Type } from '../container';
-import { isType } from '../container/utils';
-import { isString } from '../utils/lang.util';
+import { Type } from '../../container';
+import { isType } from '../../container/utils';
+import { isString } from '../../utils/lang.util';
 import { MiddlewareContainer } from './middleware-container';
-import { callableMiddlewareDecorator } from './middleware/callable-middleware-decorator';
-import { LazyLoadingMiddleware } from './middleware/lazy-loading-middleware';
-import { RequestHandlerMiddleware } from './middleware/request-handler-middleware';
+import { callableMiddlewareDecorator } from './callable-middleware-decorator';
+import { LazyLoadingMiddleware } from './lazy-loading-middleware';
+import { RequestHandlerMiddleware } from './request-handler-middleware';
 
 export class MiddlewareFactory {
   constructor(private readonly container: MiddlewareContainer) {}
