@@ -1,3 +1,6 @@
+/**
+ * System signals which shut down a process
+ */
 export enum ShutdownSignal {
   SIGHUP = 'SIGHUP',
   SIGINT = 'SIGINT',

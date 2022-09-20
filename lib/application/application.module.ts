@@ -1,11 +1,11 @@
 import { IContainer } from '../container';
-import { HttpAdapter } from '../http';
 import { Application } from './application';
 import { HookFactory } from './hooks/hook-factory';
 import { HookContainer } from './hooks/hook-container';
 import { MiddlewareContainer } from './middleware-container';
 import { MiddlewareFactory } from './middleware-factory';
 import { HookCollector } from './hooks/hook-collector';
+import { HttpAdapter } from './http-adapter';
 
 export class ApplicationModule {
   static register() {
@@ -53,7 +53,7 @@ export class ApplicationModule {
             const config: any = container.get('config') ?? {};
             const appOptions = config.app?.options ?? {};
             return new Application(
-              container.get(HttpAdapter.name),
+              new HttpAdapter(),
               container.get(MiddlewareFactory.name),
               container.get(HookCollector.name),
               appOptions,

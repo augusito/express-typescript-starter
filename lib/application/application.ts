@@ -1,13 +1,14 @@
 import { platform } from 'os';
 import { iterate } from 'iterare';
-import { HttpAdapter, ShutdownSignal } from '../http';
 import { LogFactory } from '../logging';
 import { isFunction, isString } from '../utils/lang.util';
 import { ErrorResponseGenerator } from './response/error-response-generator';
 import { HookCollector } from './hooks/hook-collector';
 import { ApplicationOptions } from './interfaces';
+import { HttpAdapter } from './http-adapter';
 import { MiddlewareFactory } from './middleware-factory';
 import { MiddlewareProxy } from './middleware-proxy';
+import { ShutdownSignal } from './enums/shutdown-signal.enum';
 
 export class Application {
   private readonly logger = LogFactory.getLog(Application.name);

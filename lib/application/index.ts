@@ -1,2 +1,3 @@
 export * from './application';
-export * from './middleware-factory';
+export * from './http-adapter';
+export * from './application.module';

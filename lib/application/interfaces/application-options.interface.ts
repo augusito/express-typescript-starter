@@ -1,5 +1,4 @@
 import { CorsOptions, CorsOptionsDelegate } from 'cors';
-import { HttpsOptions } from '../../http';
 
 export interface ApplicationOptions {
   /**
@@ -13,7 +12,7 @@ export interface ApplicationOptions {
   /**
    * Set of configurable HTTPS options
    */
-  httpsOptions?: HttpsOptions;
+  httpsOptions?: any;
   /**
    * Whether to register the raw request body on the request. Use `req.rawBody`.
    */
