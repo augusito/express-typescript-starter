@@ -1,6 +1,7 @@
 import type { Options } from 'body-parser';
 import type { IncomingMessage, ServerResponse } from 'http';
-import type { RawBodyRequest } from './interfaces';
+
+type RawBodyRequest<T> = T & { rawBody?: Buffer };
 
 const rawBodyParser = (
   req: RawBodyRequest<IncomingMessage>,
