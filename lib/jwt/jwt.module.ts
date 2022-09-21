@@ -8,9 +8,10 @@ export class JwtModule {
         {
           provide: JwtService.name,
           useFactory: (container: IContainer) => {
-            const config: any = container.get('config') ?? {};
-            const jwtOptions = config.jwt.optons;
-            return new JwtService(jwtOptions);
+            return new JwtService({
+              secret: 'secretKey',
+              signOptions: { expiresIn: '60s' },
+            });
           },
         },
       ],
