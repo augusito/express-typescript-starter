@@ -17,13 +17,13 @@ export class Application {
   private shutdownCleanupRef?: (...args: unknown[]) => unknown;
   private isInitialized = false;
   private isListening = false;
-  private httpServer: any;
+  protected httpServer: any;
 
   constructor(
     private readonly httpAdapter: HttpAdapter,
     private readonly factory: MiddlewareFactory,
     private readonly hookCollector: HookCollector,
-    private readonly options: ApplicationOptions = {},
+    private readonly appOptions: ApplicationOptions = {},
   ) {
     this.registerHttpServer();
   }
@@ -78,7 +78,7 @@ export class Application {
   }
 
   public createServer<T = any>(): T {
-    this.httpAdapter.initHttpServer(this.options);
+    this.httpAdapter.initHttpServer(this.appOptions);
     return this.httpAdapter.getHttpServer() as T;
   }
 
@@ -186,7 +186,7 @@ export class Application {
   }
 
   private getProtocol(): 'http' | 'https' {
-    return this.options && this.options.httpsOptions ? 'https' : 'http';
+    return this.appOptions && this.appOptions.httpsOptions ? 'https' : 'http';
   }
 
   private bindHandler(...args: any) {
