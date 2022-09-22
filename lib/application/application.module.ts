@@ -1,4 +1,4 @@
-import { isFunction } from 'lib/utils/lang.util';
+import { isFunction } from '../utils/lang.util';
 import { IContainer } from '../container';
 import { Application } from './application';
 import { HookCollector } from './hooks/hook-collector';

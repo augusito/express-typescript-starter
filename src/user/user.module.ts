@@ -2,7 +2,7 @@ import { Application } from '../../lib/application';
 import { IContainer } from '../../lib/container';
 import { UserHandler } from './user.handler';
 import { UserService } from './user.service';
-import { JwtService } from 'lib/jwt';
+import { JwtService } from '../../lib/jwt';
 import { AuthService } from './auth.service';
 import { LoginHandler } from './login.handler';
 

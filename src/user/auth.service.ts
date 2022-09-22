@@ -1,6 +1,6 @@
 import { UserService } from '../user/user.service';
 import { JwtService } from '../../lib/jwt';
-import { omit } from 'lib/utils/object.util';
+import { omit } from '../../lib/utils/object.util';
 
 export class AuthService {
   constructor(

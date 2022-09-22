@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
-
-import { JwtOptions, JwtRequestType, JwtService } from './jwt.service';
+import { JwtRequestType } from './enums/jwt-request-type.enum';
+import { JwtOptions } from './interfaces';
+import { JwtService } from './jwt.service';
 
 const setup = async (config: JwtOptions) => {
   return new JwtService(config);

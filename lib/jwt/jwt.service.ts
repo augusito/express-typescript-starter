@@ -1,32 +1,6 @@
 import * as jwt from 'jsonwebtoken';
-
-export enum JwtRequestType {
-  SIGN,
-  VERIFY,
-}
-
-export interface JwtOptions {
-  signOptions?: jwt.SignOptions;
-  secret?: string | Buffer;
-  publicKey?: string | Buffer;
-  privateKey?: jwt.Secret;
-  secretOrKeyProvider?: (
-    requestType: JwtRequestType,
-    tokenOrPayload: string | object | Buffer,
-    options?: jwt.VerifyOptions | jwt.SignOptions,
-  ) => jwt.Secret;
-  verifyOptions?: jwt.VerifyOptions;
-}
-
-export interface JwtSignOptions extends jwt.SignOptions {
-  secret?: string | Buffer;
-  privateKey?: string | Buffer;
-}
-
-export interface JwtVerifyOptions extends jwt.VerifyOptions {
-  secret?: string | Buffer;
-  publicKey?: string | Buffer;
-}
+import { JwtOptions, JwtSignOptions, JwtVerifyOptions } from './interfaces';
+import { JwtRequestType } from './enums/jwt-request-type.enum';
 
 export class JwtService {
   constructor(private readonly options: JwtOptions = {}) {}
