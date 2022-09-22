@@ -1,3 +1,4 @@
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 
 export class UserService {
@@ -24,5 +25,16 @@ export class UserService {
 
   async findOne(username: string): Promise<User | undefined> {
     return this.users.find((user) => user.username === username);
+  }
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user = {
+      id: this.users.length + 1,
+      ...createUserDto,
+    };
+
+    this.users.push(user);
+
+    return user;
   }
 }
