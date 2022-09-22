@@ -8,7 +8,7 @@ import { HookCollector } from './hooks/hook-collector';
 import { HttpAdapter } from './http-adapter';
 import { MiddlewareFactory } from './middleware/middleware-factory';
 import { MiddlewareProxy } from './middleware/middleware-proxy';
-import { ShutdownSignal } from './process/shutdown-signal.enum';
+import { ShutdownSignal } from './enums/shutdown-signal.enum';
 
 export class Application {
   private readonly logger = LogFactory.getLog(Application.name);
