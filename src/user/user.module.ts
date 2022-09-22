@@ -27,6 +27,15 @@ export class UserModule {
           },
         },
         {
+          provide: JwtService.name,
+          useFactory: (container: IContainer) => {
+            return new JwtService({
+              secret: 'secretKey',
+              signOptions: { expiresIn: '60s' },
+            });
+          },
+        },
+        {
           provide: AuthService.name,
           useFactory: (container: IContainer) => {
             return new AuthService(

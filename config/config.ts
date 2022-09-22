@@ -3,7 +3,6 @@ import { ConfigAggregator } from '../lib/config';
 import { ApplicationModule } from '../lib/application';
 import { AutoloadModule } from '../lib/autoload/autoload.module';
 import { EventEmitterModule } from '../lib/event-emitter/event-emitter.module';
-import { JwtModule } from '../lib/jwt';
 import { SchedulerModule } from '../lib/scheduler';
 import { AppModule } from '../src/app/app.module';
 import { OrderModule } from '../src/order/order.module';
@@ -14,7 +13,6 @@ const aggregator = new ConfigAggregator([
   ApplicationModule.register(),
   EventEmitterModule.register(),
   SchedulerModule.register(),
-  JwtModule.register(),
   AppModule.register(),
   OrderModule.register(),
   // TaskModule.register(),
