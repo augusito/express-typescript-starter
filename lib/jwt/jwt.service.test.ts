@@ -1,18 +1,14 @@
 import * as jwt from 'jsonwebtoken';
 
-import {
-  JwtModuleOptions,
-  JwtSecretRequestType,
-  JwtService,
-} from './jwt.service';
+import { JwtOptions, JwtRequestType, JwtService } from './jwt.service';
 
-const setup = async (config: JwtModuleOptions) => {
+const setup = async (config: JwtOptions) => {
   return new JwtService(config);
 };
 
 const config = {
-  secretOrKeyProvider: (requestType: JwtSecretRequestType) =>
-    requestType === JwtSecretRequestType.SIGN ? 'sign_secret' : 'verify_secret',
+  secretOrKeyProvider: (requestType: JwtRequestType) =>
+    requestType === JwtRequestType.SIGN ? 'sign_secret' : 'verify_secret',
   secret: 'default_secret',
   publicKey: 'public_key',
   privateKey: 'private_key',

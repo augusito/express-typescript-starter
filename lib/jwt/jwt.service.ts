@@ -1,25 +1,21 @@
 import * as jwt from 'jsonwebtoken';
 
-export enum JwtSecretRequestType {
+export enum JwtRequestType {
   SIGN,
   VERIFY,
 }
 
-export interface JwtModuleOptions {
+export interface JwtOptions {
   signOptions?: jwt.SignOptions;
   secret?: string | Buffer;
   publicKey?: string | Buffer;
   privateKey?: jwt.Secret;
   secretOrKeyProvider?: (
-    requestType: JwtSecretRequestType,
+    requestType: JwtRequestType,
     tokenOrPayload: string | object | Buffer,
     options?: jwt.VerifyOptions | jwt.SignOptions,
   ) => jwt.Secret;
   verifyOptions?: jwt.VerifyOptions;
-}
-
-export interface JwtOptionsFactory {
-  createJwtOptions(): Promise<JwtModuleOptions> | JwtModuleOptions;
 }
 
 export interface JwtSignOptions extends jwt.SignOptions {
@@ -33,7 +29,7 @@ export interface JwtVerifyOptions extends jwt.VerifyOptions {
 }
 
 export class JwtService {
-  constructor(private readonly options: JwtModuleOptions = {}) {}
+  constructor(private readonly options: JwtOptions = {}) {}
 
   sign(payload: string | Buffer | object, options?: JwtSignOptions): string {
     const signOptions = this.mergeJwtOptions(
@@ -44,7 +40,7 @@ export class JwtService {
       payload,
       options,
       'privateKey',
-      JwtSecretRequestType.SIGN,
+      JwtRequestType.SIGN,
     );
 
     return jwt.sign(payload, secret, signOptions);
@@ -62,7 +58,7 @@ export class JwtService {
       payload,
       options,
       'privateKey',
-      JwtSecretRequestType.SIGN,
+      JwtRequestType.SIGN,
     );
 
     return new Promise((resolve, reject) =>
@@ -78,7 +74,7 @@ export class JwtService {
       token,
       options,
       'publicKey',
-      JwtSecretRequestType.VERIFY,
+      JwtRequestType.VERIFY,
     );
 
     return jwt.verify(token, secret, verifyOptions) as T;
@@ -93,7 +89,7 @@ export class JwtService {
       token,
       options,
       'publicKey',
-      JwtSecretRequestType.VERIFY,
+      JwtRequestType.VERIFY,
     );
 
     return new Promise((resolve, reject) =>
@@ -132,7 +128,7 @@ export class JwtService {
     token: string | object | Buffer,
     options: JwtVerifyOptions | JwtSignOptions,
     key: 'publicKey' | 'privateKey',
-    secretRequestType: JwtSecretRequestType,
+    secretRequestType: JwtRequestType,
   ): string | Buffer | jwt.Secret {
     const secret = this.options.secretOrKeyProvider
       ? this.options.secretOrKeyProvider(secretRequestType, token, options)
