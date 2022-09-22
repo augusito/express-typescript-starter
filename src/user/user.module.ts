@@ -2,9 +2,6 @@ import { Application } from '../../lib/application';
 import { IContainer } from '../../lib/container';
 import { UserHandler } from './user.handler';
 import { UserService } from './user.service';
-import { JwtService } from '../../lib/jwt';
-import { AuthService } from './auth.service';
-import { LoginHandler } from './login.handler';
 
 export class UserModule {
   static register() {
@@ -20,36 +17,11 @@ export class UserModule {
             return new UserHandler(container.get(UserService.name));
           },
         },
-        {
-          provide: LoginHandler.name,
-          useFactory: (container: IContainer) => {
-            return new LoginHandler(container.get(AuthService.name));
-          },
-        },
-        {
-          provide: JwtService.name,
-          useFactory: (container: IContainer) => {
-            return new JwtService({
-              secret: 'secretKey',
-              signOptions: { expiresIn: '60s' },
-            });
-          },
-        },
-        {
-          provide: AuthService.name,
-          useFactory: (container: IContainer) => {
-            return new AuthService(
-              container.get(UserService.name),
-              container.get(JwtService.name),
-            );
-          },
-        },
       ],
     };
   }
 
   static registerRoutes(app: Application) {
     app.get('/users', UserHandler.name);
-    app.post('/login', LoginHandler.name);
   }
 }

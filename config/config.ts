@@ -6,6 +6,7 @@ import { EventEmitterModule } from '../lib/event-emitter/event-emitter.module';
 import { SchedulerModule } from '../lib/scheduler';
 import { AppModule } from '../src/app/app.module';
 import { OrderModule } from '../src/order/order.module';
+import { AuthModule } from 'src/auth/auth.module';
 // import { TaskModule } from '../src/task/task.module';
 import { UserModule } from '../src/user/user.module';
 
@@ -15,6 +16,7 @@ const aggregator = new ConfigAggregator([
   SchedulerModule.register(),
   AppModule.register(),
   OrderModule.register(),
+  AuthModule.register(),
   // TaskModule.register(),
   UserModule.register(),
   AutoloadModule.register(
