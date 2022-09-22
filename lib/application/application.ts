@@ -55,6 +55,21 @@ export class Application {
     return this;
   }
 
+  public put(path: any, ...args: [any, any?]) {
+    this.httpAdapter.put(path, this.bindHandler(...args));
+    return this;
+  }
+
+  public patch(path: any, ...args: [any, any?]) {
+    this.httpAdapter.patch(path, this.bindHandler(...args));
+    return this;
+  }
+
+  public delete(path: any, ...args: [any, any?]) {
+    this.httpAdapter.delete(path, this.bindHandler(...args));
+    return this;
+  }
+
   public async close(): Promise<void> {
     await this.dispose();
     await this.hookCollector.callShutdownHook();
