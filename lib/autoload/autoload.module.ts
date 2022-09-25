@@ -1,16 +1,17 @@
 import * as glob from 'glob';
 import { merge } from '../config';
+import { dynamicRequire } from './utils';
 
 export class AutoloadModule {
   static register(pattern: any) {
+    let config = {};
     // Load configuration from autoload path
     const paths = glob.sync(pattern, { nosort: true });
-    // return an object containing of configurations
-    return paths.reduce(async (acc, path) => {
-      const obj = await acc; // This waits for the previous iteration to resolve
-      const mod = await import(path); // Import each loaded JS file
-      const result = merge(obj, mod.default); // Merge the result
-      return result; // Return an object containing of configurations
-    }, Promise.resolve({})); // Start with an immediately resolved promise
+    // Require each file in the autload dir
+    paths.forEach((file: any) => {
+      config = merge(config, dynamicRequire(file));
+    });
+    // return a an object containing of configurations
+    return config;
   }
 }

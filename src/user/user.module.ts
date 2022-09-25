@@ -1,21 +1,23 @@
+import * as Database from 'better-sqlite3';
 import { Application } from '../../lib/application';
-import { IContainer } from '../../lib/container';
+import { IContainer, Provider } from '../../lib/container';
 import { UserCreateHandler } from './user-create.handler';
-import { UserHandler } from './user.handler';
+import { UserListHandler } from './user-list.handler';
 import { UserService } from './user.service';
 
 export class UserModule {
-  static register() {
+  static register(): { providers: Provider[] } {
     return {
       providers: [
         {
           provide: UserService.name,
-          useClass: UserService,
+          useFactory: (container: IContainer) =>
+            new UserService(container.get(Database.name)),
         },
         {
-          provide: UserHandler.name,
+          provide: UserListHandler.name,
           useFactory: (container: IContainer) => {
-            return new UserHandler(container.get(UserService.name));
+            return new UserListHandler(container.get(UserService.name));
           },
         },
         {
@@ -29,7 +31,7 @@ export class UserModule {
   }
 
   static registerRoutes(app: Application) {
-    app.get('/users', UserHandler.name);
+    app.get('/users/:id', UserListHandler.name);
     app.post('/users', UserCreateHandler.name);
   }
 }

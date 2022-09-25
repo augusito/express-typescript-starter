@@ -6,8 +6,8 @@ export class LoginHandler {
 
   async handle(req: any, res: Response) {
     const { username, password } = req.body;
-    const result = await this.authService.login({ username, password });
+    const result = this.authService.login({ username, password });
 
-    res.status(200).json(result);
+    return res.status(200).json(result);
   }
 }

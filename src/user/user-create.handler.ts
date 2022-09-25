@@ -4,9 +4,9 @@ import { UserService } from './user.service';
 export class UserCreateHandler {
   constructor(private readonly userService: UserService) {}
 
-  async handle(req: Request, res: Response) {
-    const user = await this.userService.create(req.body);
-
-    res.status(200).json(user);
+  handle(req: Request, res: Response) {
+    const id = this.userService.create(req.body);
+    const user = this.userService.getById(id);
+    return res.status(200).json(user);
   }
 }

@@ -18,10 +18,9 @@ export class AuthModule {
         {
           provide: JwtService.name,
           useFactory: (container: IContainer) => {
-            return new JwtService({
-              secret: 'secretKey',
-              signOptions: { expiresIn: '60s' },
-            });
+            const config: any = container.get('config') ?? {};
+            const jwtOptions = config?.jwtOptions ?? {};
+            return new JwtService(jwtOptions);
           },
         },
         {
